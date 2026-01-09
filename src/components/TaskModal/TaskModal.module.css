@@ -1,0 +1,155 @@
+.modalOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.7);
+    backdrop-filter: blur(4px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.2s ease;
+}
+
+.modal {
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    width: 500px;
+    max-width: 90%;
+    animation: slideUp 0.3s ease;
+}
+
+.modalHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.modalHeader h2 {
+    font-size: 20px;
+    font-weight: 600;
+}
+
+.closeBtn {
+    background: none;
+    color: var(--text-secondary);
+    font-size: 24px;
+    padding: 4px 8px;
+    line-height: 1;
+}
+
+.closeBtn:hover {
+    color: var(--text-primary);
+}
+
+.formGroup {
+    margin-bottom: 16px;
+}
+
+.formGroup label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+.formGroup input,
+.formGroup textarea {
+    width: 100%;
+}
+
+.formGroup select {
+    width: 100%;
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+.formGroup select option {
+    background-color: var(--bg-secondary);
+    color: var(--text-primary);
+}
+
+.projectSelect {
+    display: flex;
+    gap: 8px;
+}
+
+.projectOption {
+    flex: 1;
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    border: 2px solid var(--border-color);
+    background: var(--bg-glass);
+    color: var(--text-secondary);
+    font-weight: 500;
+    text-align: center;
+}
+
+.projectOption:hover {
+    border-color: var(--text-muted);
+}
+
+.projectOption.active.foundation {
+    border-color: var(--color-foundation);
+    background: rgba(74, 222, 128, 0.15);
+    color: var(--color-foundation);
+}
+
+.projectOption.active.drive {
+    border-color: var(--color-drive);
+    background: rgba(167, 139, 250, 0.15);
+    color: var(--color-drive);
+}
+
+.projectOption.active.joy {
+    border-color: var(--color-joy);
+    background: rgba(250, 204, 21, 0.15);
+    color: var(--color-joy);
+}
+
+.projectOption.active.reflection {
+    border-color: var(--color-reflection);
+    background: rgba(251, 146, 60, 0.15);
+    color: var(--color-reflection);
+}
+
+.row {
+    display: flex;
+    gap: 16px;
+}
+
+.row .formGroup {
+    flex: 1;
+}
+
+.modalActions {
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+    margin-top: 24px;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

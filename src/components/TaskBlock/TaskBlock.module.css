@@ -1,0 +1,155 @@
+.taskBlock {
+    padding: 12px;
+    border-radius: var(--radius-sm);
+    margin-bottom: 8px;
+    cursor: grab;
+    transition: all 0.2s ease;
+    position: relative;
+    overflow: hidden;
+}
+
+.taskBlock::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+}
+
+.taskBlock.foundation::before {
+    background: var(--color-foundation);
+}
+
+.taskBlock.drive::before {
+    background: var(--color-drive);
+}
+
+.taskBlock.joy::before {
+    background: var(--color-joy);
+}
+
+.taskBlock.reflection::before {
+    background: var(--color-reflection);
+}
+
+.taskBlock.foundation {
+    background: rgba(74, 222, 128, 0.15);
+    border: 1px solid rgba(74, 222, 128, 0.3);
+}
+
+.taskBlock.drive {
+    background: rgba(167, 139, 250, 0.15);
+    border: 1px solid rgba(167, 139, 250, 0.3);
+}
+
+.taskBlock.joy {
+    background: rgba(250, 204, 21, 0.15);
+    border: 1px solid rgba(250, 204, 21, 0.3);
+}
+
+.taskBlock.reflection {
+    background: rgba(251, 146, 60, 0.15);
+    border: 1px solid rgba(251, 146, 60, 0.3);
+}
+
+.taskBlock:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-soft);
+}
+
+.taskBlock.dragging {
+    opacity: 0.5;
+    cursor: grabbing;
+}
+
+.taskBlock.completed {
+    opacity: 0.6;
+}
+
+.taskBlock.completed .taskTitle {
+    text-decoration: line-through;
+}
+
+.taskHeader {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+}
+
+.projectBadge {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 4px;
+    color: #000;
+}
+
+.projectBadge.foundation {
+    background: var(--color-foundation);
+}
+
+.projectBadge.drive {
+    background: var(--color-drive);
+}
+
+.projectBadge.joy {
+    background: var(--color-joy);
+}
+
+.projectBadge.reflection {
+    background: var(--color-reflection);
+}
+
+.duration {
+    font-size: 12px;
+    color: var(--text-secondary);
+    margin-left: auto;
+}
+
+.taskTitle {
+    font-size: 14px;
+    color: var(--text-primary);
+    word-break: break-word;
+}
+
+.taskActions {
+    display: flex;
+    gap: 4px;
+    margin-top: 8px;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.taskBlock:hover .taskActions {
+    opacity: 1;
+}
+
+.actionBtn {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: var(--text-secondary);
+    width: 28px;
+    height: 28px;
+    border-radius: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+}
+
+.actionBtn:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--text-primary);
+}
+
+.checkBtn.checked {
+    color: var(--color-foundation);
+}
+
+.startTime {
+    font-size: 11px;
+    color: var(--text-muted);
+    margin-bottom: 4px;
+}

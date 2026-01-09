@@ -1,0 +1,140 @@
+import { useState, useEffect } from 'react';
+import { usePlannerStore } from '../../store/plannerStore';
+import type { WeeklyReflection } from '../../types';
+import styles from './ReflectionPanel.module.css';
+
+export function ReflectionPanel() {
+    const { currentWeek, saveReflection } = usePlannerStore();
+    const [reflection, setReflection] = useState<WeeklyReflection>(currentWeek.reflection);
+    const [saved, setSaved] = useState(false);
+
+    useEffect(() => {
+        setReflection(currentWeek.reflection);
+    }, [currentWeek.reflection]);
+
+    const handleSave = () => {
+        saveReflection(reflection);
+        setSaved(true);
+        setTimeout(() => setSaved(false), 3000);
+    };
+
+    const updateDone = (field: 'foundation' | 'drive' | 'joy', value: string) => {
+        setReflection({
+            ...reflection,
+            done: { ...reflection.done, [field]: value },
+        });
+    };
+
+    const updateNotDone = (field: 'foundation' | 'drive' | 'joy', value: string) => {
+        setReflection({
+            ...reflection,
+            notDone: { ...reflection.notDone, [field]: value },
+        });
+    };
+
+    return (
+        <div className={styles.reflectionPanel}>
+            <div className={styles.header}>
+                <h2>💭 Рефлексия по итогам недели</h2>
+                <p>Три важных вопроса для анализа прогресса и корректировки плана</p>
+            </div>
+
+            <div className={styles.sections}>
+                {/* Секция 1: Что было сделано */}
+                <div className={styles.section}>
+                    <h3>
+                        <span className={styles.sectionNumber}>1</span>
+                        Что было сделано по каждому проекту?
+                    </h3>
+                    <div className={styles.projectInputs}>
+                        <div className={styles.projectInput}>
+                            <span className={`${styles.projectLabel} ${styles.foundation}`}>Фундамент</span>
+                            <textarea
+                                value={reflection.done.foundation}
+                                onChange={(e) => updateDone('foundation', e.target.value)}
+                                placeholder="Что удалось сделать по проекту Фундамент?"
+                            />
+                        </div>
+                        <div className={styles.projectInput}>
+                            <span className={`${styles.projectLabel} ${styles.drive}`}>Драйв</span>
+                            <textarea
+                                value={reflection.done.drive}
+                                onChange={(e) => updateDone('drive', e.target.value)}
+                                placeholder="Что удалось сделать по проекту Драйв?"
+                            />
+                        </div>
+                        <div className={styles.projectInput}>
+                            <span className={`${styles.projectLabel} ${styles.joy}`}>Кайф</span>
+                            <textarea
+                                value={reflection.done.joy}
+                                onChange={(e) => updateDone('joy', e.target.value)}
+                                placeholder="Что удалось сделать по проекту Кайф?"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                {/* Секция 2: Что НЕ было сделано */}
+                <div className={styles.section}>
+                    <h3>
+                        <span className={styles.sectionNumber}>2</span>
+                        Что НЕ было сделано? С чем возникли сложности?
+                    </h3>
+                    <div className={styles.projectInputs}>
+                        <div className={styles.projectInput}>
+                            <span className={`${styles.projectLabel} ${styles.foundation}`}>Фундамент</span>
+                            <textarea
+                                value={reflection.notDone.foundation}
+                                onChange={(e) => updateNotDone('foundation', e.target.value)}
+                                placeholder="Что не получилось по проекту Фундамент?"
+                            />
+                        </div>
+                        <div className={styles.projectInput}>
+                            <span className={`${styles.projectLabel} ${styles.drive}`}>Драйв</span>
+                            <textarea
+                                value={reflection.notDone.drive}
+                                onChange={(e) => updateNotDone('drive', e.target.value)}
+                                placeholder="Что не получилось по проекту Драйв?"
+                            />
+                        </div>
+                        <div className={styles.projectInput}>
+                            <span className={`${styles.projectLabel} ${styles.joy}`}>Кайф</span>
+                            <textarea
+                                value={reflection.notDone.joy}
+                                onChange={(e) => updateNotDone('joy', e.target.value)}
+                                placeholder="Что не получилось по проекту Кайф?"
+                            />
+                        </div>
+                    </div>
+                </div>
+
+                {/* Секция 3: Корректировка */}
+                <div className={styles.section}>
+                    <h3>
+                        <span className={styles.sectionNumber}>3</span>
+                        Как скорректировать подход на следующую неделю?
+                    </h3>
+                    <div className={styles.adjustmentsInput}>
+                        <textarea
+                            value={reflection.adjustments}
+                            onChange={(e) => setReflection({ ...reflection, adjustments: e.target.value })}
+                            placeholder="Какие уроки вы извлекли? Что нужно изменить в подходе?"
+                        />
+                    </div>
+                </div>
+            </div>
+
+            <div className={styles.actions}>
+                <button className="btn btn-primary" onClick={handleSave}>
+                    💾 Сохранить рефлексию
+                </button>
+            </div>
+
+            {saved && (
+                <div className={styles.savedMessage}>
+                    ✅ Рефлексия сохранена!
+                </div>
+            )}
+        </div>
+    );
+}

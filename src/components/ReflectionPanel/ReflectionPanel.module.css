@@ -1,0 +1,133 @@
+.reflectionPanel {
+    padding: 24px;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.header h2 {
+    font-size: 28px;
+    font-weight: 700;
+    background: var(--accent-gradient);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    margin-bottom: 8px;
+}
+
+.header p {
+    color: var(--text-secondary);
+    font-size: 14px;
+}
+
+.sections {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.section {
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    padding: 24px;
+}
+
+.section h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.sectionNumber {
+    width: 28px;
+    height: 28px;
+    background: var(--accent-gradient);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.projectInputs {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.projectInput {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.projectLabel {
+    min-width: 100px;
+    padding: 8px 12px;
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    font-weight: 500;
+    text-align: center;
+}
+
+.projectLabel.foundation {
+    background: rgba(74, 222, 128, 0.15);
+    color: var(--color-foundation);
+    border: 1px solid rgba(74, 222, 128, 0.3);
+}
+
+.projectLabel.drive {
+    background: rgba(167, 139, 250, 0.15);
+    color: var(--color-drive);
+    border: 1px solid rgba(167, 139, 250, 0.3);
+}
+
+.projectLabel.joy {
+    background: rgba(250, 204, 21, 0.15);
+    color: var(--color-joy);
+    border: 1px solid rgba(250, 204, 21, 0.3);
+}
+
+.projectInput textarea {
+    flex: 1;
+    min-height: 60px;
+}
+
+.adjustmentsInput textarea {
+    width: 100%;
+    min-height: 100px;
+}
+
+.actions {
+    display: flex;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 32px;
+}
+
+.savedMessage {
+    text-align: center;
+    color: var(--color-foundation);
+    font-size: 14px;
+    margin-top: 16px;
+    animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}

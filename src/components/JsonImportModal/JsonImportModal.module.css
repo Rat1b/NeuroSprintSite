@@ -1,0 +1,99 @@
+.jsonInput {
+    width: 100%;
+    font-family: 'Monaco', 'Menlo', 'Consolas', monospace;
+    font-size: 13px;
+    min-height: 300px;
+    resize: vertical;
+    background: var(--bg-primary);
+}
+
+.error {
+    color: #ef4444;
+    font-size: 13px;
+    margin-top: 8px;
+    padding: 12px;
+    background: rgba(239, 68, 68, 0.1);
+    border-radius: var(--radius-sm);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+}
+
+.preview {
+    margin-top: 16px;
+    padding: 16px;
+    background: var(--bg-glass);
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-color);
+}
+
+.preview h4 {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--text-primary);
+}
+
+.previewItem {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border-color);
+    font-size: 13px;
+}
+
+.previewItem:last-child {
+    border-bottom: none;
+}
+
+.previewBadge {
+    padding: 2px 8px;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 11px;
+    color: #000;
+}
+
+.previewBadge.foundation {
+    background: var(--color-foundation);
+}
+
+.previewBadge.drive {
+    background: var(--color-drive);
+}
+
+.previewBadge.joy {
+    background: var(--color-joy);
+}
+
+.previewBadge.reflection {
+    background: var(--color-reflection);
+}
+
+.previewDay {
+    color: var(--text-muted);
+    min-width: 30px;
+}
+
+.previewTitle {
+    color: var(--text-primary);
+    flex: 1;
+}
+
+.previewDuration {
+    color: var(--text-secondary);
+}
+
+.helpText {
+    font-size: 12px;
+    color: var(--text-muted);
+    margin-top: 8px;
+}
+
+.helpLink {
+    color: var(--accent-primary);
+    text-decoration: none;
+}
+
+.helpLink:hover {
+    text-decoration: underline;
+}
