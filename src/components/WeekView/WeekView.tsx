@@ -21,10 +21,11 @@ interface WeekViewProps {
 }
 
 export function WeekView({ onAddTask, onEditTask }: WeekViewProps) {
-    const { currentWeek, moveTask, reorderTasksInDay, addTask } = usePlannerStore();
+    const { currentWeek, moveTask, reorderTasksInDay, addTask, setBudgetHours } = usePlannerStore();
     const [activeTask, setActiveTask] = useState<Task | null>(null);
-    const [weeklyBudgetHours, setWeeklyBudgetHours] = useState(10);
     const [isDuplicating, setIsDuplicating] = useState(false);
+
+    const weeklyBudgetHours = currentWeek.budgetHours ?? 10; // Fallback for old data
 
     // Отслеживание Ctrl/Cmd для дублирования при перетаскивании
     useEffect(() => {
@@ -171,7 +172,7 @@ export function WeekView({ onAddTask, onEditTask }: WeekViewProps) {
                         <input
                             type="number"
                             value={weeklyBudgetHours}
-                            onChange={(e) => setWeeklyBudgetHours(Math.max(1, parseInt(e.target.value) || 10))}
+                            onChange={(e) => setBudgetHours(Math.max(1, parseInt(e.target.value) || 10))}
                             min={1}
                             max={40}
                         />

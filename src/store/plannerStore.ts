@@ -31,6 +31,7 @@ const createEmptyWeekPlan = (): WeekPlan => ({
     id: uuidv4(),
     weekStart: getCurrentWeekStart(),
     structureOption: 1,
+    budgetHours: 10,
     tasks: [],
     reflection: createEmptyReflection(),
 });
@@ -51,6 +52,7 @@ interface PlannerStore {
 
     // Действия с планом
     setStructureOption: (option: 1 | 2 | 3 | 4 | 5) => void;
+    setBudgetHours: (hours: number) => void;
     saveReflection: (reflection: WeeklyReflection) => void;
     setActiveView: (view: 'planner' | 'reflection' | 'month') => void;
 
@@ -160,6 +162,15 @@ export const usePlannerStore = create<PlannerStore>()(
                     currentWeek: {
                         ...state.currentWeek,
                         structureOption: option,
+                    },
+                }));
+            },
+
+            setBudgetHours: (hours) => {
+                set((state) => ({
+                    currentWeek: {
+                        ...state.currentWeek,
+                        budgetHours: hours,
                     },
                 }));
             },

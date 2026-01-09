@@ -36,6 +36,7 @@ export interface WeekPlan {
   id: string;
   weekStart: string;     // "YYYY-MM-DD"
   structureOption: 1 | 2 | 3 | 4 | 5;
+  budgetHours: number;   // Бюджет времени на неделю в часах
   tasks: Task[];
   reflection: WeeklyReflection;
 }
