@@ -258,3 +258,40 @@
     border-color: rgba(99, 102, 241, 0.5);
     transform: translateX(2px);
 }
+
+/* Reset point styles */
+.weekLabel.clickable {
+    cursor: pointer;
+    padding: 2px 8px;
+    margin: -2px -8px;
+    border-radius: 6px;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.weekLabel.clickable:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+.resetMarker {
+    font-size: 0.85rem;
+}
+
+.resetWeek {
+    background: rgba(239, 68, 68, 0.08) !important;
+    border-color: rgba(239, 68, 68, 0.2) !important;
+}
+
+.resetWeek .weekIndicator {
+    background: linear-gradient(180deg, #ef4444, #dc2626) !important;
+}
+
+.resetIcon {
+    font-size: 0.85rem;
+}
+
+.legendItem .resetIcon {
+    margin-right: -2px;
+}

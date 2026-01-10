@@ -43,6 +43,7 @@ interface PlannerStore {
     weeks: WeekPlan[];
     activeView: 'planner' | 'reflection' | 'month';
     monthSettings: MonthSettingsMap;
+    sprintResetWeeks: string[];  // Даты недель где нумерация сбрасывается на 1.1
 
     // Действия с задачами
     addTask: (task: Omit<Task, 'id' | 'order'>) => void;
@@ -70,6 +71,9 @@ interface PlannerStore {
     // Настройки месяца
     getMonthSettings: (monthKey: string) => MonthSettings;
     setMonthSettings: (monthKey: string, settings: Partial<MonthSettings>) => void;
+
+    // Точки сброса спринтов
+    toggleSprintReset: (weekStart: string) => void;
 }
 
 export const usePlannerStore = create<PlannerStore>()(
@@ -79,6 +83,7 @@ export const usePlannerStore = create<PlannerStore>()(
             weeks: [],
             activeView: 'planner',
             monthSettings: {},
+            sprintResetWeeks: [],
 
             addTask: (taskData) => {
                 const tasksInDay = get().currentWeek.tasks.filter(t => t.day === taskData.day);
@@ -332,6 +337,17 @@ export const usePlannerStore = create<PlannerStore>()(
                         },
                     },
                 }));
+            },
+
+            toggleSprintReset: (weekStart: string) => {
+                set((state) => {
+                    const exists = state.sprintResetWeeks.includes(weekStart);
+                    return {
+                        sprintResetWeeks: exists
+                            ? state.sprintResetWeeks.filter(w => w !== weekStart)
+                            : [...state.sprintResetWeeks, weekStart].sort(),
+                    };
+                });
             },
         }),
         {

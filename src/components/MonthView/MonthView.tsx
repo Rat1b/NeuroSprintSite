@@ -77,7 +77,14 @@ function generateWeeksForView(currentWeekStart: string): string[] {
 }
 
 export function MonthView({ onOpenWeek }: MonthViewProps) {
-    const { currentWeek, weeks, getMonthSettings, setMonthSettings } = usePlannerStore();
+    const {
+        currentWeek,
+        weeks,
+        getMonthSettings,
+        setMonthSettings,
+        sprintResetWeeks,
+        toggleSprintReset
+    } = usePlannerStore();
     const [showSettings, setShowSettings] = useState(false);
     const settingsRef = useRef<HTMLDivElement>(null);
 
@@ -97,9 +104,39 @@ export function MonthView({ onOpenWeek }: MonthViewProps) {
         return () => document.removeEventListener('mousedown', handleClickOutside);
     }, []);
 
-    // Получить номер спринта или -1 если интеграционная неделя
-    // Формат: { cycle: номер_цикла, week: номер_недели_в_спринте } или null для интеграции
-    function getSprintInfo(weekIndex: number): { cycle: number; week: number } | null {
+    // Найти индекс недели относительно последней точки сброса
+    function getWeekIndexFromReset(weekStart: string): number {
+        // Сортируем точки сброса по дате
+        const sortedResets = [...sprintResetWeeks].sort();
+
+        // Находим последнюю точку сброса ДО или РАВНУЮ текущей неделе
+        let lastResetIndex = -1;
+        for (let i = sortedResets.length - 1; i >= 0; i--) {
+            if (sortedResets[i] <= weekStart) {
+                lastResetIndex = i;
+                break;
+            }
+        }
+
+        if (lastResetIndex === -1) {
+            // Нет точек сброса до этой недели
+            // Считаем от начала времён (используем первую неделю как старт)
+            const baseDate = new Date('2020-01-06'); // Понедельник
+            const currentDate = new Date(weekStart);
+            const diffDays = (currentDate.getTime() - baseDate.getTime()) / (1000 * 60 * 60 * 24);
+            return Math.floor(diffDays / 7);
+        }
+
+        // Считаем недели от точки сброса
+        const resetDate = new Date(sortedResets[lastResetIndex]);
+        const currentDate = new Date(weekStart);
+        const diffDays = (currentDate.getTime() - resetDate.getTime()) / (1000 * 60 * 60 * 24);
+        return Math.floor(diffDays / 7);
+    }
+
+    // Получить номер спринта
+    function getSprintInfo(weekStart: string): { cycle: number; week: number } | null {
+        const weekIndex = getWeekIndexFromReset(weekStart);
         const sprintWeeks = settings.sprintWeeks;
         const integrationEvery = settings.integrationEvery;
 
@@ -120,16 +157,20 @@ export function MonthView({ onOpenWeek }: MonthViewProps) {
         return { cycle: (cycleNumber - 1) * integrationEvery + sprintNumber, week: weekInSprint };
     }
 
-    function getWeekType(weekIndex: number): 'sprint' | 'integration' {
-        return getSprintInfo(weekIndex) !== null ? 'sprint' : 'integration';
+    function getWeekType(weekStart: string): 'sprint' | 'integration' {
+        return getSprintInfo(weekStart) !== null ? 'sprint' : 'integration';
     }
 
-    function getWeekLabel(weekIndex: number): string {
-        const info = getSprintInfo(weekIndex);
+    function getWeekLabel(weekStart: string): string {
+        const info = getSprintInfo(weekStart);
         if (info === null) {
             return 'Интеграция';
         }
         return `Спринт ${info.cycle}.${info.week}`;
+    }
+
+    function isResetPoint(weekStart: string): boolean {
+        return sprintResetWeeks.includes(weekStart);
     }
 
     // Получить данные недели из сохранённых
@@ -161,6 +202,10 @@ export function MonthView({ onOpenWeek }: MonthViewProps) {
                         <div className={styles.legendItem}>
                             <div className={`${styles.legendBar} ${styles.integration}`}></div>
                             <span>Интеграция</span>
+                        </div>
+                        <div className={styles.legendItem}>
+                            <span className={styles.resetIcon}>🚩</span>
+                            <span>Точка сброса</span>
                         </div>
                     </div>
 
@@ -211,10 +256,11 @@ export function MonthView({ onOpenWeek }: MonthViewProps) {
             </div>
 
             <div className={styles.weeksContainer}>
-                {viewWeeks.map((weekStart, index) => {
-                    const weekType = getWeekType(index);
+                {viewWeeks.map((weekStart) => {
+                    const weekType = getWeekType(weekStart);
                     const weekData = getWeekData(weekStart);
                     const isCurrentWeek = weekStart === currentWeek.weekStart;
+                    const hasResetPoint = isResetPoint(weekStart);
 
                     const totalTasks = weekData?.tasks.length || 0;
                     const completedTasks = weekData?.tasks.filter(t => t.completed).length || 0;
@@ -223,13 +269,18 @@ export function MonthView({ onOpenWeek }: MonthViewProps) {
                     return (
                         <div
                             key={weekStart}
-                            className={`${styles.weekRow} ${isCurrentWeek ? styles.currentWeek : ''}`}
+                            className={`${styles.weekRow} ${isCurrentWeek ? styles.currentWeek : ''} ${hasResetPoint ? styles.resetWeek : ''}`}
                         >
                             <div className={`${styles.weekIndicator} ${styles[weekType]}`}></div>
                             <div className={styles.weekContent}>
                                 <div className={styles.weekInfo}>
-                                    <div className={`${styles.weekLabel} ${styles[weekType]}`}>
-                                        {getWeekLabel(index)}
+                                    <div
+                                        className={`${styles.weekLabel} ${styles[weekType]} ${styles.clickable}`}
+                                        onClick={() => toggleSprintReset(weekStart)}
+                                        title={hasResetPoint ? "Убрать точку сброса" : "Установить как точку сброса (нумерация начнётся с 1.1)"}
+                                    >
+                                        {hasResetPoint && <span className={styles.resetMarker}>🚩</span>}
+                                        {getWeekLabel(weekStart)}
                                     </div>
                                     <div className={styles.weekDates}>
                                         {formatWeekDates(weekStart)}
