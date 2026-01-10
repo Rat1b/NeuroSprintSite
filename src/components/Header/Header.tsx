@@ -44,6 +44,8 @@ export function Header({ onImportClick, onAIInstructionsClick }: HeaderProps) {
     const handlePrevWeek = () => {
         const currentDate = new Date(currentWeek.weekStart);
         currentDate.setDate(currentDate.getDate() - 7);
+        // Не позволяем перейти раньше 2026 года
+        if (currentDate.getFullYear() < 2026) return;
         goToWeek(currentDate.toISOString().split('T')[0]);
     };
 
@@ -56,6 +58,8 @@ export function Header({ onImportClick, onAIInstructionsClick }: HeaderProps) {
     const handlePrevMonth = () => {
         const currentDate = new Date(currentWeek.weekStart);
         currentDate.setMonth(currentDate.getMonth() - 1);
+        // Не позволяем перейти раньше 2026 года
+        if (currentDate.getFullYear() < 2026) return;
         // Перейти на первый понедельник нового месяца
         const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
         const dayOfWeek = firstDay.getDay();

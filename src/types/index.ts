@@ -156,6 +156,6 @@ export type MonthSettingsMap = Record<string, MonthSettings>;
 
 // Настройки по умолчанию
 export const DEFAULT_MONTH_SETTINGS: MonthSettings = {
-  sprintWeeks: 2,
-  integrationEvery: 2,
+  sprintWeeks: 1,
+  integrationEvery: 1,
 };
