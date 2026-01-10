@@ -1,3 +1,4 @@
+import { useRef } from 'react';
 import { usePlannerStore } from '../../store/plannerStore';
 import styles from './Header.module.css';
 
@@ -16,9 +17,12 @@ export function Header({ onImportClick, onAIInstructionsClick }: HeaderProps) {
         currentWeek,
         activeView,
         setActiveView,
-        exportToJSON,
-        goToWeek
+        goToWeek,
+        exportAllData,
+        importAllData
     } = usePlannerStore();
+
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const formatWeekDate = (dateStr: string) => {
         const date = new Date(dateStr);
@@ -71,15 +75,34 @@ export function Header({ onImportClick, onAIInstructionsClick }: HeaderProps) {
         goToWeek(firstDay.toISOString().split('T')[0]);
     };
 
-    const handleExport = () => {
-        const json = exportToJSON();
+    const handleExportAllData = () => {
+        const json = exportAllData();
         const blob = new Blob([json], { type: 'application/json' });
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `neurosprint-${currentWeek.weekStart}.json`;
+        a.download = `neurosprint-backup-${new Date().toISOString().split('T')[0]}.json`;
         a.click();
         URL.revokeObjectURL(url);
+    };
+
+    const handleImportAllData = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0];
+        if (!file) return;
+
+        const reader = new FileReader();
+        reader.onload = (e) => {
+            const content = e.target?.result as string;
+            const success = importAllData(content);
+            if (success) {
+                alert('Данные успешно импортированы!');
+            } else {
+                alert('Ошибка при импорте данных. Проверьте формат файла.');
+            }
+        };
+        reader.readAsText(file);
+        // Очистить input для возможности повторного выбора того же файла
+        event.target.value = '';
     };
 
     const getActualCurrentWeekStart = (): string => {
@@ -182,15 +205,32 @@ export function Header({ onImportClick, onAIInstructionsClick }: HeaderProps) {
                     </button>
                 </div>
 
-                <button className="btn btn-secondary" onClick={onAIInstructionsClick}>
-                    🤖 Инструкции для ИИ
-                </button>
-                <button className="btn btn-secondary" onClick={onImportClick}>
-                    📥 Импорт JSON
-                </button>
-                <button className="btn btn-secondary" onClick={handleExport}>
-                    📤 Экспорт
-                </button>
+                <div className={styles.buttonGroup}>
+                    <span className={styles.groupLabel}>🧠 ИИ</span>
+                    <button className="btn btn-secondary" onClick={onAIInstructionsClick}>
+                        🤖 Инструкции
+                    </button>
+                    <button className="btn btn-secondary" onClick={onImportClick}>
+                        📥 Импорт JSON
+                    </button>
+                </div>
+
+                <div className={styles.buttonGroup}>
+                    <span className={styles.groupLabel}>💾 Данные</span>
+                    <button className="btn btn-secondary" onClick={handleExportAllData}>
+                        📤 Экспорт
+                    </button>
+                    <label className="btn btn-secondary" style={{ cursor: 'pointer' }}>
+                        📥 Импорт
+                        <input
+                            type="file"
+                            accept=".json"
+                            onChange={handleImportAllData}
+                            ref={fileInputRef}
+                            style={{ display: 'none' }}
+                        />
+                    </label>
+                </div>
             </div>
         </header>
     );

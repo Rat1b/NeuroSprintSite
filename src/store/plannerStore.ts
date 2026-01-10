@@ -74,6 +74,10 @@ interface PlannerStore {
 
     // Точки сброса спринтов
     toggleSprintReset: (weekStart: string) => void;
+
+    // Полный экспорт/импорт всех данных
+    exportAllData: () => string;
+    importAllData: (jsonString: string) => boolean;
 }
 
 export const usePlannerStore = create<PlannerStore>()(
@@ -348,6 +352,37 @@ export const usePlannerStore = create<PlannerStore>()(
                             : [...state.sprintResetWeeks, weekStart].sort(),
                     };
                 });
+            },
+
+            exportAllData: () => {
+                const state = get();
+                const exportData = {
+                    version: 1,
+                    exportDate: new Date().toISOString(),
+                    currentWeek: state.currentWeek,
+                    weeks: state.weeks,
+                    monthSettings: state.monthSettings,
+                    sprintResetWeeks: state.sprintResetWeeks,
+                };
+                return JSON.stringify(exportData, null, 2);
+            },
+
+            importAllData: (jsonString: string): boolean => {
+                try {
+                    const data = JSON.parse(jsonString);
+                    if (!data.currentWeek || !Array.isArray(data.weeks)) {
+                        return false;
+                    }
+                    set({
+                        currentWeek: data.currentWeek,
+                        weeks: data.weeks,
+                        monthSettings: data.monthSettings || {},
+                        sprintResetWeeks: data.sprintResetWeeks || [],
+                    });
+                    return true;
+                } catch {
+                    return false;
+                }
             },
         }),
         {
