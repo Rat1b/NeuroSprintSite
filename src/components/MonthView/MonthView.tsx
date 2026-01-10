@@ -110,28 +110,30 @@ export function MonthView({ onOpenWeek }: MonthViewProps) {
         const sortedResets = [...sprintResetWeeks].sort();
 
         // Находим последнюю точку сброса ДО или РАВНУЮ текущей неделе
-        let lastResetIndex = -1;
+        let lastResetDate: string | null = null;
         for (let i = sortedResets.length - 1; i >= 0; i--) {
             if (sortedResets[i] <= weekStart) {
-                lastResetIndex = i;
+                lastResetDate = sortedResets[i];
                 break;
             }
         }
 
-        if (lastResetIndex === -1) {
+        // Функция для расчёта разницы в неделях
+        const getWeeksDiff = (fromDate: string, toDate: string): number => {
+            const from = new Date(fromDate + 'T00:00:00Z');
+            const to = new Date(toDate + 'T00:00:00Z');
+            const diffMs = to.getTime() - from.getTime();
+            return Math.round(diffMs / (7 * 24 * 60 * 60 * 1000));
+        };
+
+        if (lastResetDate === null) {
             // Нет точек сброса до этой недели
-            // Считаем от начала времён (используем первую неделю как старт)
-            const baseDate = new Date('2020-01-06'); // Понедельник
-            const currentDate = new Date(weekStart);
-            const diffDays = (currentDate.getTime() - baseDate.getTime()) / (1000 * 60 * 60 * 24);
-            return Math.floor(diffDays / 7);
+            // Считаем от начала 2026 года (первый понедельник)
+            return getWeeksDiff('2025-12-29', weekStart); // Понедельник перед 1 января 2026
         }
 
         // Считаем недели от точки сброса
-        const resetDate = new Date(sortedResets[lastResetIndex]);
-        const currentDate = new Date(weekStart);
-        const diffDays = (currentDate.getTime() - resetDate.getTime()) / (1000 * 60 * 60 * 24);
-        return Math.floor(diffDays / 7);
+        return getWeeksDiff(lastResetDate, weekStart);
     }
 
     // Получить номер спринта
