@@ -221,15 +221,16 @@ export function Header({ onImportClick, onAIInstructionsClick }: HeaderProps) {
 
                 <div className={styles.buttonGroup}>
                     <span className={styles.groupLabel}>💾 Данные</span>
-                    <button className="btn btn-danger" onClick={handleExportAllData} style={{
-                        background: 'linear-gradient(135deg, #ff4d4d, #e63946)',
+                    <button className="btn btn-success" onClick={handleExportAllData} style={{
+                        background: 'linear-gradient(135deg, #22c55e, #16a34a)',
                         border: 'none',
-                        boxShadow: '0 2px 10px rgba(230, 57, 70, 0.3)'
+                        color: '#fff',
+                        boxShadow: '0 2px 10px rgba(34, 197, 94, 0.3)'
                     }}>
                         📤 Сохранить!
                     </button>
                     <label className="btn btn-secondary" style={{ cursor: 'pointer' }}>
-                        📥 Импорт
+                        📥 Загрузить
                         <input
                             type="file"
                             accept=".json"
