@@ -7,11 +7,12 @@ import { ReflectionPanel } from './components/ReflectionPanel/ReflectionPanel';
 import { TaskModal } from './components/TaskModal/TaskModal';
 import { JsonImportModal } from './components/JsonImportModal/JsonImportModal';
 import { AIInstructionsModal } from './components/AIInstructionsModal/AIInstructionsModal';
+import { SaveReminderPopup } from './components/SaveReminderPopup/SaveReminderPopup';
 import type { Task, DayOfWeek } from './types';
 import './index.css';
 
 function App() {
-  const { activeView, goToWeek, setActiveView } = usePlannerStore();
+  const { activeView, goToWeek, setActiveView, exportAllData } = usePlannerStore();
 
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
@@ -83,6 +84,17 @@ function App() {
         isOpen={isAIModalOpen}
         onClose={() => setIsAIModalOpen(false)}
       />
+
+      <SaveReminderPopup onSave={() => {
+        const json = exportAllData();
+        const blob = new Blob([json], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `neurosprint-backup-${new Date().toISOString().split('T')[0]}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+      }} />
     </>
   );
 }

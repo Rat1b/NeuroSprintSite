@@ -221,8 +221,12 @@ export function Header({ onImportClick, onAIInstructionsClick }: HeaderProps) {
 
                 <div className={styles.buttonGroup}>
                     <span className={styles.groupLabel}>💾 Данные</span>
-                    <button className="btn btn-secondary" onClick={handleExportAllData}>
-                        📤 Экспорт
+                    <button className="btn btn-danger" onClick={handleExportAllData} style={{
+                        background: 'linear-gradient(135deg, #ff4d4d, #e63946)',
+                        border: 'none',
+                        boxShadow: '0 2px 10px rgba(230, 57, 70, 0.3)'
+                    }}>
+                        📤 Сохранить!
                     </button>
                     <label className="btn btn-secondary" style={{ cursor: 'pointer' }}>
                         📥 Импорт
