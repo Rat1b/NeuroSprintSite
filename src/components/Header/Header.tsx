@@ -6,6 +6,11 @@ interface HeaderProps {
     onAIInstructionsClick: () => void;
 }
 
+const MONTH_NAMES = [
+    'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
+    'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'
+];
+
 export function Header({ onImportClick, onAIInstructionsClick }: HeaderProps) {
     const {
         currentWeek,
@@ -27,6 +32,11 @@ export function Header({ onImportClick, onAIInstructionsClick }: HeaderProps) {
         return `${formatDate(date)} – ${formatDate(endDate)}`;
     };
 
+    const formatMonthYear = (dateStr: string) => {
+        const date = new Date(dateStr);
+        return `${MONTH_NAMES[date.getMonth()]} ${date.getFullYear()}`;
+    };
+
     const handlePrevWeek = () => {
         const currentDate = new Date(currentWeek.weekStart);
         currentDate.setDate(currentDate.getDate() - 7);
@@ -37,6 +47,28 @@ export function Header({ onImportClick, onAIInstructionsClick }: HeaderProps) {
         const currentDate = new Date(currentWeek.weekStart);
         currentDate.setDate(currentDate.getDate() + 7);
         goToWeek(currentDate.toISOString().split('T')[0]);
+    };
+
+    const handlePrevMonth = () => {
+        const currentDate = new Date(currentWeek.weekStart);
+        currentDate.setMonth(currentDate.getMonth() - 1);
+        // Перейти на первый понедельник нового месяца
+        const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+        const dayOfWeek = firstDay.getDay();
+        const daysToMonday = dayOfWeek === 0 ? 1 : (dayOfWeek === 1 ? 0 : 8 - dayOfWeek);
+        firstDay.setDate(firstDay.getDate() + daysToMonday);
+        goToWeek(firstDay.toISOString().split('T')[0]);
+    };
+
+    const handleNextMonth = () => {
+        const currentDate = new Date(currentWeek.weekStart);
+        currentDate.setMonth(currentDate.getMonth() + 1);
+        // Перейти на первый понедельник нового месяца
+        const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
+        const dayOfWeek = firstDay.getDay();
+        const daysToMonday = dayOfWeek === 0 ? 1 : (dayOfWeek === 1 ? 0 : 8 - dayOfWeek);
+        firstDay.setDate(firstDay.getDate() + daysToMonday);
+        goToWeek(firstDay.toISOString().split('T')[0]);
     };
 
     const handleExport = () => {
@@ -64,11 +96,32 @@ export function Header({ onImportClick, onAIInstructionsClick }: HeaderProps) {
     };
 
     const actualWeekStart = getActualCurrentWeekStart();
+    const currentDate = new Date(currentWeek.weekStart);
+    const actualDate = new Date(actualWeekStart);
+
     const isCurrentWeek = currentWeek.weekStart === actualWeekStart;
+    const isCurrentMonth = currentDate.getMonth() === actualDate.getMonth() &&
+        currentDate.getFullYear() === actualDate.getFullYear();
 
     const handleGoToCurrentWeek = () => {
         goToWeek(actualWeekStart);
     };
+
+    const handleGoToCurrentMonth = () => {
+        goToWeek(actualWeekStart);
+    };
+
+    // Выбор обработчиков в зависимости от view
+    const isMonthView = activeView === 'month';
+    const handlePrev = isMonthView ? handlePrevMonth : handlePrevWeek;
+    const handleNext = isMonthView ? handleNextMonth : handleNextWeek;
+    const handleGoToCurrent = isMonthView ? handleGoToCurrentMonth : handleGoToCurrentWeek;
+    const isCurrent = isMonthView ? isCurrentMonth : isCurrentWeek;
+    const navTitle = isMonthView
+        ? (isCurrent ? "Текущий месяц" : "Вернуться к текущему месяцу")
+        : (isCurrent ? "Текущая неделя" : "Вернуться к текущей неделе");
+    const prevTitle = isMonthView ? "Предыдущий месяц" : "Предыдущая неделя";
+    const nextTitle = isMonthView ? "Следующий месяц" : "Следующая неделя";
 
     return (
         <header className={styles.header}>
@@ -77,13 +130,13 @@ export function Header({ onImportClick, onAIInstructionsClick }: HeaderProps) {
 
                 <div className={styles.weekNav}>
                     <button
-                        onClick={handleGoToCurrentWeek}
-                        className={!isCurrentWeek ? styles.active : ''}
-                        disabled={isCurrentWeek}
-                        title="Вернуться к текущей неделе"
+                        onClick={handleGoToCurrent}
+                        className={!isCurrent ? styles.active : ''}
+                        disabled={isCurrent}
+                        title={navTitle}
                         style={{
-                            opacity: isCurrentWeek ? 0.3 : 1,
-                            cursor: isCurrentWeek ? 'default' : 'pointer',
+                            opacity: isCurrent ? 0.3 : 1,
+                            cursor: isCurrent ? 'default' : 'pointer',
                             marginRight: '10px',
                             background: 'none',
                             border: 'none',
@@ -92,13 +145,16 @@ export function Header({ onImportClick, onAIInstructionsClick }: HeaderProps) {
                     >
                         🎯
                     </button>
-                    <button onClick={handlePrevWeek} title="Предыдущая неделя">
+                    <button onClick={handlePrev} title={prevTitle}>
                         ←
                     </button>
                     <span className={styles.weekDate}>
-                        {formatWeekDate(currentWeek.weekStart)}
+                        {isMonthView
+                            ? formatMonthYear(currentWeek.weekStart)
+                            : formatWeekDate(currentWeek.weekStart)
+                        }
                     </span>
-                    <button onClick={handleNextWeek} title="Следующая неделя">
+                    <button onClick={handleNext} title={nextTitle}>
                         →
                     </button>
                 </div>
