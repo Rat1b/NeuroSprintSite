@@ -40,9 +40,9 @@ export function SaveReminderPopup({ onSave }: SaveReminderPopupProps) {
         <div className={styles.overlay}>
             <div className={styles.popup}>
                 <div className={styles.icon}>💾</div>
-                <h3 className={styles.title}>Не забудьте сохранить!</h3>
+                <h3 className={styles.title}>Время сохраниться!</h3>
                 <p className={styles.message}>
-                    Чтобы на всякий случай не потерять прогресс
+                    Сохраните прогресс, чтобы он был в безопасности
                 </p>
                 <div className={styles.buttons}>
                     <button
