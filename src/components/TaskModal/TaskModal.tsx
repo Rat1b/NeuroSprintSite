@@ -12,8 +12,7 @@ interface TaskModalProps {
 }
 
 export function TaskModal({ isOpen, onClose, task, defaultDay }: TaskModalProps) {
-    const { addTask, updateTask } = usePlannerStore();
-
+    const { addTask, updateTask, currentWeek } = usePlannerStore();
     const [project, setProject] = useState<ProjectType>('Д');
     const [title, setTitle] = useState('');
     const [duration, setDuration] = useState(30);
@@ -28,13 +27,27 @@ export function TaskModal({ isOpen, onClose, task, defaultDay }: TaskModalProps)
             setDay(task.day);
             setStartTime(task.startTime || '');
         } else {
-            setProject('Д');
+            // Умная логика выбора проекта по умолчанию
+            const targetDay = defaultDay || 'ПН';
+            const tasksInDay = currentWeek.tasks.filter(t => t.day === targetDay);
+            const hasF = tasksInDay.some(t => t.project === 'Ф');
+            const hasD = tasksInDay.some(t => t.project === 'Д');
+            const hasK = tasksInDay.some(t => t.project === 'К');
+
+            let defaultProject: ProjectType = 'Ф';
+
+            // Логика: Ф -> Д -> К -> Ф
+            if (hasF) defaultProject = 'Д';
+            if (hasD) defaultProject = 'К'; // Если есть Д, то следующий К (перекрывает Ф->Д)
+            if (hasK) defaultProject = 'Ф'; // Если есть К, то следующий снова Ф (перекрывает Д->К)
+
+            setProject(defaultProject);
             setTitle('');
             setDuration(30);
-            setDay(defaultDay || 'ПН');
+            setDay(targetDay);
             setStartTime('');
         }
-    }, [task, defaultDay, isOpen]);
+    }, [task, defaultDay, isOpen, currentWeek]);
 
     if (!isOpen) return null;
 
@@ -126,9 +139,8 @@ export function TaskModal({ isOpen, onClose, task, defaultDay }: TaskModalProps)
                             <input
                                 type="number"
                                 value={duration}
-                                onChange={(e) => setDuration(Math.max(1, parseInt(e.target.value) || 1))}
+                                onChange={(e) => setDuration(Math.max(1, parseInt(e.target.value) || 0))}
                                 min={1}
-                                step={5}
                             />
                         </div>
 

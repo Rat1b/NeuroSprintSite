@@ -1,7 +1,8 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { v4 as uuidv4 } from 'uuid';
-import type { Task, WeekPlan, WeeklyReflection, DayOfWeek, AIJsonImport } from '../types';
+import type { Task, WeekPlan, WeeklyReflection, DayOfWeek, AIJsonImport, MonthSettings, MonthSettingsMap } from '../types';
+import { DEFAULT_MONTH_SETTINGS } from '../types';
 
 // Создать пустую рефлексию
 const createEmptyReflection = (): WeeklyReflection => ({
@@ -41,6 +42,7 @@ interface PlannerStore {
     currentWeek: WeekPlan;
     weeks: WeekPlan[];
     activeView: 'planner' | 'reflection' | 'month';
+    monthSettings: MonthSettingsMap;
 
     // Действия с задачами
     addTask: (task: Omit<Task, 'id' | 'order'>) => void;
@@ -64,6 +66,10 @@ interface PlannerStore {
     // Навигация по неделям
     goToWeek: (weekStart: string) => void;
     createNewWeek: () => void;
+
+    // Настройки месяца
+    getMonthSettings: (monthKey: string) => MonthSettings;
+    setMonthSettings: (monthKey: string, settings: Partial<MonthSettings>) => void;
 }
 
 export const usePlannerStore = create<PlannerStore>()(
@@ -72,6 +78,7 @@ export const usePlannerStore = create<PlannerStore>()(
             currentWeek: createEmptyWeekPlan(),
             weeks: [],
             activeView: 'planner',
+            monthSettings: {},
 
             addTask: (taskData) => {
                 const tasksInDay = get().currentWeek.tasks.filter(t => t.day === taskData.day);
@@ -308,6 +315,23 @@ export const usePlannerStore = create<PlannerStore>()(
                     currentWeek: newWeek,
                     weeks: updatedWeeks,
                 });
+            },
+
+            getMonthSettings: (monthKey: string): MonthSettings => {
+                const { monthSettings } = get();
+                return monthSettings[monthKey] || { ...DEFAULT_MONTH_SETTINGS };
+            },
+
+            setMonthSettings: (monthKey: string, settings: Partial<MonthSettings>) => {
+                set((state) => ({
+                    monthSettings: {
+                        ...state.monthSettings,
+                        [monthKey]: {
+                            ...(state.monthSettings[monthKey] || DEFAULT_MONTH_SETTINGS),
+                            ...settings,
+                        },
+                    },
+                }));
             },
         }),
         {

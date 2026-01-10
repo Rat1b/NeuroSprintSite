@@ -1,70 +1,177 @@
+/* MonthView styles */
 .monthView {
     padding: 20px;
-    max-width: 1200px;
+    max-width: 900px;
     margin: 0 auto;
 }
 
 .header {
     display: flex;
     justify-content: space-between;
-    align-items: center;
+    align-items: flex-start;
     margin-bottom: 24px;
+    gap: 20px;
+}
+
+.headerLeft {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
 }
 
 .monthTitle {
-    font-size: 28px;
+    font-size: 1.8rem;
     font-weight: 700;
-    background: var(--accent-gradient);
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: #ffffff;
+    margin: 0;
+}
+
+.monthDateRange {
+    font-size: 0.95rem;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.headerRight {
+    display: flex;
+    align-items: center;
+    gap: 16px;
 }
 
 .legend {
     display: flex;
-    gap: 20px;
+    gap: 16px;
 }
 
 .legendItem {
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 13px;
-    color: var(--text-secondary);
+    gap: 6px;
+    font-size: 0.85rem;
+    color: rgba(255, 255, 255, 0.7);
 }
 
 .legendBar {
-    width: 24px;
-    height: 8px;
-    border-radius: 4px;
+    width: 12px;
+    height: 12px;
+    border-radius: 3px;
 }
 
 .legendBar.sprint {
-    background: linear-gradient(90deg, #6366f1, #8b5cf6);
+    background: linear-gradient(135deg, #6366f1, #8b5cf6);
 }
 
 .legendBar.integration {
-    background: linear-gradient(90deg, #f59e0b, #f97316);
+    background: linear-gradient(135deg, #f59e0b, #ef4444);
 }
 
+/* Settings button & dropdown */
+.settingsButton {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 8px;
+    padding: 8px 12px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    color: rgba(255, 255, 255, 0.8);
+}
+
+.settingsButton:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateY(-1px);
+}
+
+.settingsContainer {
+    position: relative;
+}
+
+.settingsDropdown {
+    position: absolute;
+    top: 100%;
+    right: 0;
+    margin-top: 8px;
+    background: linear-gradient(180deg, #1e1b4b 0%, #0f172a 100%);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    border-radius: 12px;
+    padding: 16px;
+    min-width: 280px;
+    box-shadow: 0 12px 40px rgba(0, 0, 0, 0.5);
+    z-index: 100;
+}
+
+.settingsDropdown h4 {
+    margin: 0 0 12px 0;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
+}
+
+.settingsField {
+    margin-bottom: 14px;
+}
+
+.settingsField:last-child {
+    margin-bottom: 0;
+}
+
+.settingsField label {
+    display: block;
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.6);
+    margin-bottom: 6px;
+}
+
+.settingsField select {
+    width: 100%;
+    padding: 8px 12px;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    border-radius: 6px;
+    color: #ffffff;
+    font-size: 0.9rem;
+    cursor: pointer;
+}
+
+.settingsField select:focus {
+    outline: none;
+    border-color: #6366f1;
+}
+
+.settingsField select option {
+    background: #1e1b4b;
+    color: #ffffff;
+}
+
+/* Weeks container */
 .weeksContainer {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 8px;
 }
 
 .weekRow {
     display: flex;
     align-items: stretch;
-    gap: 12px;
-    background: var(--bg-card);
-    border-radius: var(--radius-md);
-    border: 1px solid var(--border-color);
+    background: rgba(255, 255, 255, 0.03);
+    border-radius: 12px;
     overflow: hidden;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+}
+
+.weekRow:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: rgba(255, 255, 255, 0.1);
+}
+
+.weekRow.currentWeek {
+    background: rgba(99, 102, 241, 0.1);
+    border-color: rgba(99, 102, 241, 0.3);
 }
 
 .weekIndicator {
-    width: 8px;
+    width: 4px;
     flex-shrink: 0;
 }
 
@@ -73,30 +180,30 @@
 }
 
 .weekIndicator.integration {
-    background: linear-gradient(180deg, #f59e0b, #f97316);
+    background: linear-gradient(180deg, #f59e0b, #ef4444);
 }
 
 .weekContent {
     flex: 1;
-    padding: 16px;
     display: flex;
     align-items: center;
-    gap: 16px;
+    padding: 14px 20px;
+    gap: 20px;
 }
 
 .weekInfo {
     flex: 1;
+    min-width: 180px;
 }
 
 .weekLabel {
-    font-size: 11px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+    font-size: 0.95rem;
+    font-weight: 600;
     margin-bottom: 4px;
 }
 
 .weekLabel.sprint {
-    color: #a78bfa;
+    color: #a5b4fc;
 }
 
 .weekLabel.integration {
@@ -104,9 +211,8 @@
 }
 
 .weekDates {
-    font-size: 16px;
-    font-weight: 600;
-    color: var(--text-primary);
+    font-size: 0.8rem;
+    color: rgba(255, 255, 255, 0.5);
 }
 
 .weekStats {
@@ -119,76 +225,36 @@
 }
 
 .statValue {
-    font-size: 20px;
-    font-weight: 700;
-    color: var(--text-primary);
+    font-size: 1rem;
+    font-weight: 600;
+    color: rgba(255, 255, 255, 0.9);
 }
 
 .statLabel {
-    font-size: 11px;
-    color: var(--text-muted);
+    font-size: 0.7rem;
+    color: rgba(255, 255, 255, 0.4);
     text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .weekActions {
-    display: flex;
-    gap: 8px;
+    flex-shrink: 0;
 }
 
 .openWeekBtn {
+    background: rgba(99, 102, 241, 0.2);
+    border: 1px solid rgba(99, 102, 241, 0.3);
+    border-radius: 8px;
     padding: 8px 16px;
-    background: var(--bg-glass);
-    border: 1px solid var(--border-color);
-    border-radius: var(--radius-sm);
-    color: var(--text-secondary);
-    font-size: 13px;
+    font-size: 0.85rem;
+    color: #a5b4fc;
     cursor: pointer;
-    transition: all 0.2s;
+    transition: all 0.2s ease;
+    white-space: nowrap;
 }
 
 .openWeekBtn:hover {
-    background: rgba(99, 102, 241, 0.15);
-    border-color: var(--accent-primary);
-    color: var(--text-primary);
-}
-
-.currentWeek {
-    border-color: var(--accent-primary);
-    box-shadow: 0 0 0 1px var(--accent-primary);
-}
-
-.daysGrid {
-    display: grid;
-    grid-template-columns: repeat(7, 1fr);
-    gap: 4px;
-    margin-top: 8px;
-}
-
-.dayCell {
-    padding: 4px;
-    text-align: center;
-    font-size: 11px;
-    border-radius: 4px;
-    background: var(--bg-glass);
-}
-
-.dayCell.hasTask {
-    background: rgba(99, 102, 241, 0.2);
-    color: var(--accent-primary);
-}
-
-.dayCell.today {
-    background: var(--accent-primary);
-    color: white;
-    font-weight: 600;
-}
-
-.noWeeks {
-    text-align: center;
-    padding: 60px 20px;
-    color: var(--text-muted);
-}
-
-.noWeeks p {
-    margin-bottom: 16px;
+    background: rgba(99, 102, 241, 0.3);
+    border-color: rgba(99, 102, 241, 0.5);
+    transform: translateX(2px);
 }

@@ -144,3 +144,18 @@ export interface AIJsonImport {
     startTime?: string;
   }>;
 }
+
+// Настройки спринтов для конкретного месяца
+export interface MonthSettings {
+  sprintWeeks: number;      // Длина спринта в неделях (по умолчанию 2)
+  integrationEvery: number; // Интеграция каждые N спринтов (по умолчанию 2)
+}
+
+// Настройки по месяцам (ключ: "YYYY-MM")
+export type MonthSettingsMap = Record<string, MonthSettings>;
+
+// Настройки по умолчанию
+export const DEFAULT_MONTH_SETTINGS: MonthSettings = {
+  sprintWeeks: 2,
+  integrationEvery: 2,
+};
