@@ -153,3 +153,80 @@
         transform: translateY(0);
     }
 }
+
+/* =====================================================
+   RESPONSIVE STYLES
+   ===================================================== */
+
+@media (max-width: 768px) {
+    .modalOverlay {
+        align-items: flex-end;
+    }
+
+    .modal {
+        width: 100%;
+        max-width: 100%;
+        max-height: 90vh;
+        border-radius: 20px 20px 0 0;
+        padding: 20px;
+        animation: slideUpMobile 0.3s ease;
+    }
+
+    .modalHeader h2 {
+        font-size: 18px;
+    }
+
+    .projectSelect {
+        flex-wrap: wrap;
+    }
+
+    .projectOption {
+        flex: 1 1 45%;
+        min-width: 100px;
+        padding: 14px 10px;
+    }
+
+    .row {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .modalActions {
+        flex-direction: column-reverse;
+        gap: 10px;
+    }
+
+    .modalActions button,
+    .modalActions .btn {
+        width: 100%;
+        justify-content: center;
+        padding: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .modal {
+        padding: 16px;
+    }
+
+    .formGroup label {
+        font-size: 13px;
+    }
+
+    .projectOption {
+        font-size: 13px;
+        padding: 12px 8px;
+    }
+}
+
+@keyframes slideUpMobile {
+    from {
+        opacity: 0;
+        transform: translateY(100%);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}

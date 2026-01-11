@@ -116,3 +116,98 @@
 .dayColumn.weekend .dayHeader {
     background: rgba(99, 102, 241, 0.1);
 }
+
+/* =====================================================
+   RESPONSIVE STYLES
+   ===================================================== */
+
+@media (max-width: 1024px) {
+    .dayColumn {
+        min-width: 160px;
+    }
+
+    .dayHeader {
+        padding: 12px;
+    }
+
+    .dayName {
+        font-size: 14px;
+    }
+
+    .dayContent {
+        padding: 10px;
+        min-height: 250px;
+    }
+}
+
+@media (max-width: 768px) {
+    .dayColumn {
+        min-width: 100%;
+        width: 100%;
+        flex: none;
+    }
+
+    .dayHeader {
+        padding: 12px 16px;
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .dayName {
+        font-size: 15px;
+    }
+
+    .dayDate {
+        font-size: 12px;
+        margin-top: 0;
+    }
+
+    .dayBudget {
+        width: 100%;
+        margin-top: 4px;
+        justify-content: flex-start;
+    }
+
+    .dayContent {
+        padding: 12px;
+        min-height: 150px;
+    }
+
+    .emptyState {
+        padding: 16px;
+        font-size: 13px;
+    }
+
+    .addTaskBtn {
+        padding: 14px;
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 480px) {
+    .dayHeader {
+        padding: 10px 12px;
+    }
+
+    .dayName {
+        font-size: 14px;
+    }
+
+    .dayContent {
+        padding: 10px;
+        min-height: 120px;
+    }
+
+    .budgetItem {
+        font-size: 9px;
+        padding: 2px 4px;
+    }
+
+    .addTaskBtn {
+        padding: 12px;
+        font-size: 13px;
+    }
+}

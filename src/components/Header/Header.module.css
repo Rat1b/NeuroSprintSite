@@ -111,3 +111,223 @@
     font-weight: 500;
     margin-right: 4px;
 }
+
+/* Hamburger Menu Button */
+.menuButton {
+    display: none;
+    background: none;
+    border: none;
+    color: var(--text-primary);
+    font-size: 1.5rem;
+    padding: 8px;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background 0.2s;
+}
+
+.menuButton:hover {
+    background: rgba(255, 255, 255, 0.1);
+}
+
+/* Mobile Menu Overlay */
+.mobileMenuOverlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 999;
+    animation: fadeIn 0.2s ease;
+}
+
+.mobileMenuOverlay.open {
+    display: block;
+}
+
+/* Mobile Menu */
+.mobileMenu {
+    position: fixed;
+    top: 0;
+    right: -300px;
+    width: 280px;
+    max-width: 85vw;
+    height: 100%;
+    background: var(--bg-secondary);
+    border-left: 1px solid var(--border-color);
+    z-index: 1000;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    transition: right 0.3s ease;
+    overflow-y: auto;
+}
+
+.mobileMenu.open {
+    right: 0;
+}
+
+.mobileMenuHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.mobileMenuTitle {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.closeMenuBtn {
+    background: none;
+    border: none;
+    color: var(--text-secondary);
+    font-size: 1.5rem;
+    padding: 4px;
+    cursor: pointer;
+}
+
+.closeMenuBtn:hover {
+    color: var(--text-primary);
+}
+
+.mobileButtonGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.mobileButtonGroup .groupLabel {
+    font-size: 0.8rem;
+    margin-bottom: 4px;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+/* =====================================================
+   RESPONSIVE STYLES
+   ===================================================== */
+
+@media (max-width: 1024px) {
+    .header {
+        padding: 0.75rem 1.5rem;
+    }
+
+    .headerLeft {
+        gap: 1rem;
+    }
+
+    .logo {
+        font-size: 1.25rem;
+    }
+
+    .viewTab {
+        padding: 0.4rem 0.75rem;
+        font-size: 0.85rem;
+    }
+
+    .buttonGroup {
+        padding: 4px 8px;
+    }
+}
+
+@media (max-width: 768px) {
+    .header {
+        flex-wrap: wrap;
+        padding: 0.75rem 1rem;
+        gap: 0.75rem;
+    }
+
+    .headerLeft {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .logo {
+        font-size: 1.1rem;
+    }
+
+    .weekNav {
+        gap: 0.5rem;
+        font-size: 0.95rem;
+    }
+
+    .weekDate {
+        min-width: 110px;
+        font-size: 0.9rem;
+    }
+
+    .menuButton {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    .headerRight {
+        width: 100%;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+    }
+
+    .viewTabs {
+        width: 100%;
+        margin-right: 0;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none;
+    }
+
+    .viewTabs::-webkit-scrollbar {
+        display: none;
+    }
+
+    .viewTab {
+        flex-shrink: 0;
+        padding: 0.5rem 1rem;
+    }
+
+    /* Hide button groups on mobile - they go in hamburger menu */
+    .buttonGroup {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .header {
+        padding: 0.5rem 0.75rem;
+    }
+
+    .logo {
+        font-size: 1rem;
+    }
+
+    .weekNav {
+        gap: 0.25rem;
+    }
+
+    .weekNav button {
+        padding: 0.35rem;
+        font-size: 0.9rem;
+    }
+
+    .weekDate {
+        min-width: 90px;
+        font-size: 0.8rem;
+    }
+
+    .viewTab {
+        padding: 0.4rem 0.75rem;
+        font-size: 0.8rem;
+    }
+}

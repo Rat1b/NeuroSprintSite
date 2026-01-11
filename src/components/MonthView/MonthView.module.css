@@ -295,3 +295,106 @@
 .legendItem .resetIcon {
     margin-right: -2px;
 }
+
+/* =====================================================
+   RESPONSIVE STYLES
+   ===================================================== */
+
+@media (max-width: 768px) {
+    .monthView {
+        padding: 16px;
+    }
+
+    .header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .headerRight {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .legend {
+        gap: 12px;
+    }
+
+    .legendItem {
+        font-size: 0.75rem;
+    }
+
+    .monthTitle {
+        font-size: 1.4rem;
+    }
+
+    .weekRow {
+        flex-direction: column;
+    }
+
+    .weekContent {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px;
+        padding: 12px 16px;
+    }
+
+    .weekInfo {
+        min-width: auto;
+        width: 100%;
+    }
+
+    .weekStats {
+        width: 100%;
+        justify-content: space-between;
+    }
+
+    .weekActions {
+        width: 100%;
+    }
+
+    .openWeekBtn {
+        width: 100%;
+        text-align: center;
+    }
+
+    .settingsDropdown {
+        right: auto;
+        left: 0;
+        min-width: 260px;
+    }
+}
+
+@media (max-width: 480px) {
+    .monthView {
+        padding: 12px;
+    }
+
+    .monthTitle {
+        font-size: 1.2rem;
+    }
+
+    .monthDateRange {
+        font-size: 0.85rem;
+    }
+
+    .weekContent {
+        padding: 10px 12px;
+    }
+
+    .weekLabel {
+        font-size: 0.85rem;
+    }
+
+    .weekDates {
+        font-size: 0.75rem;
+    }
+
+    .statValue {
+        font-size: 0.9rem;
+    }
+
+    .statLabel {
+        font-size: 0.65rem;
+    }
+}

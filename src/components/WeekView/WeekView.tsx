@@ -24,6 +24,7 @@ export function WeekView({ onAddTask, onEditTask }: WeekViewProps) {
     const { currentWeek, moveTask, reorderTasksInDay, addTask, setBudgetHours } = usePlannerStore();
     const [activeTask, setActiveTask] = useState<Task | null>(null);
     const [isDuplicating, setIsDuplicating] = useState(false);
+    const [isSidebarOpen, setIsSidebarOpen] = useState(false);
 
     const weeklyBudgetHours = currentWeek.budgetHours ?? 10; // Fallback for old data
 
@@ -164,7 +165,22 @@ export function WeekView({ onAddTask, onEditTask }: WeekViewProps) {
 
     return (
         <div className={styles.weekView}>
-            <div className={styles.sidebar}>
+            {/* Mobile sidebar overlay */}
+            <div
+                className={`${styles.sidebarOverlay} ${isSidebarOpen ? styles.open : ''}`}
+                onClick={() => setIsSidebarOpen(false)}
+            />
+
+            {/* Floating sidebar toggle button for mobile */}
+            <button
+                className={styles.sidebarToggle}
+                onClick={() => setIsSidebarOpen(!isSidebarOpen)}
+                aria-label="Показать статистику"
+            >
+                📊
+            </button>
+
+            <div className={`${styles.sidebar} ${isSidebarOpen ? styles.open : ''}`}>
                 {/* Бюджет времени на неделю */}
                 <div className={styles.budgetCard}>
                     <h3>⏱️ Бюджет на неделю</h3>

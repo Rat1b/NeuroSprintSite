@@ -1,4 +1,4 @@
-import { useRef } from 'react';
+import { useRef, useState } from 'react';
 import { usePlannerStore } from '../../store/plannerStore';
 import styles from './Header.module.css';
 
@@ -23,6 +23,7 @@ export function Header({ onImportClick, onAIInstructionsClick }: HeaderProps) {
     } = usePlannerStore();
 
     const fileInputRef = useRef<HTMLInputElement>(null);
+    const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     const formatWeekDate = (dateStr: string) => {
         const date = new Date(dateStr);
@@ -185,6 +186,15 @@ export function Header({ onImportClick, onAIInstructionsClick }: HeaderProps) {
                         →
                     </button>
                 </div>
+
+                {/* Hamburger menu button - visible only on mobile */}
+                <button
+                    className={styles.menuButton}
+                    onClick={() => setIsMobileMenuOpen(true)}
+                    aria-label="Открыть меню"
+                >
+                    ☰
+                </button>
             </div>
 
             <div className={styles.headerRight}>
@@ -209,6 +219,7 @@ export function Header({ onImportClick, onAIInstructionsClick }: HeaderProps) {
                     </button>
                 </div>
 
+                {/* Desktop button groups - hidden on mobile */}
                 <div className={styles.buttonGroup}>
                     <span className={styles.groupLabel}>🧠 ИИ</span>
                     <button className="btn btn-secondary" onClick={onAIInstructionsClick}>
@@ -236,6 +247,69 @@ export function Header({ onImportClick, onAIInstructionsClick }: HeaderProps) {
                             accept=".json"
                             onChange={handleImportAllData}
                             ref={fileInputRef}
+                            style={{ display: 'none' }}
+                        />
+                    </label>
+                </div>
+            </div>
+
+            {/* Mobile menu overlay */}
+            <div
+                className={`${styles.mobileMenuOverlay} ${isMobileMenuOpen ? styles.open : ''}`}
+                onClick={() => setIsMobileMenuOpen(false)}
+            />
+
+            {/* Mobile slide-out menu */}
+            <div className={`${styles.mobileMenu} ${isMobileMenuOpen ? styles.open : ''}`}>
+                <div className={styles.mobileMenuHeader}>
+                    <span className={styles.mobileMenuTitle}>Меню</span>
+                    <button
+                        className={styles.closeMenuBtn}
+                        onClick={() => setIsMobileMenuOpen(false)}
+                        aria-label="Закрыть меню"
+                    >
+                        ✕
+                    </button>
+                </div>
+
+                <div className={styles.mobileButtonGroup}>
+                    <span className={styles.groupLabel}>🧠 ИИ</span>
+                    <button className="btn btn-secondary" onClick={() => {
+                        setIsMobileMenuOpen(false);
+                        onAIInstructionsClick();
+                    }}>
+                        🤖 Инструкции
+                    </button>
+                    <button className="btn btn-secondary" onClick={() => {
+                        setIsMobileMenuOpen(false);
+                        onImportClick();
+                    }}>
+                        📥 Импорт JSON
+                    </button>
+                </div>
+
+                <div className={styles.mobileButtonGroup}>
+                    <span className={styles.groupLabel}>💾 Данные</span>
+                    <button className="btn btn-success" onClick={() => {
+                        setIsMobileMenuOpen(false);
+                        handleExportAllData();
+                    }} style={{
+                        background: 'linear-gradient(135deg, #22c55e, #16a34a)',
+                        border: 'none',
+                        color: '#fff',
+                        boxShadow: '0 2px 10px rgba(34, 197, 94, 0.3)'
+                    }}>
+                        📤 Сохранить!
+                    </button>
+                    <label className="btn btn-secondary" style={{ cursor: 'pointer', display: 'flex', justifyContent: 'center' }}>
+                        📥 Загрузить
+                        <input
+                            type="file"
+                            accept=".json"
+                            onChange={(e) => {
+                                setIsMobileMenuOpen(false);
+                                handleImportAllData(e);
+                            }}
                             style={{ display: 'none' }}
                         />
                     </label>

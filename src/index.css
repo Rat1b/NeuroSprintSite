@@ -4,7 +4,7 @@
   --color-drive: #A78BFA;
   --color-joy: #FACC15;
   --color-reflection: #FB923C;
-  
+
   /* Фон и текст */
   --bg-primary: #0f0f1a;
   --bg-secondary: #1a1a2e;
@@ -14,21 +14,21 @@
   --text-primary: #ffffff;
   --text-secondary: rgba(255, 255, 255, 0.7);
   --text-muted: rgba(255, 255, 255, 0.4);
-  
+
   /* Акценты */
   --accent-primary: #6366f1;
   --accent-secondary: #8b5cf6;
   --accent-gradient: linear-gradient(135deg, var(--accent-primary), var(--accent-secondary));
-  
+
   /* Тени и эффекты */
   --shadow-soft: 0 4px 20px rgba(0, 0, 0, 0.3);
   --shadow-glow: 0 0 30px rgba(99, 102, 241, 0.3);
-  
+
   /* Размеры */
   --radius-sm: 8px;
   --radius-md: 12px;
   --radius-lg: 16px;
-  
+
   /* Сетка времени */
   --cell-height: 60px;
   --hour-height: 80px;
@@ -58,24 +58,24 @@ body::before {
   bottom: -50%;
   width: 200%;
   height: 200%;
-  background: 
-    radial-gradient(ellipse 80% 60% at 20% 20%, 
-      rgba(99, 102, 241, 0.18) 0%, 
+  background:
+    radial-gradient(ellipse 80% 60% at 20% 20%,
+      rgba(99, 102, 241, 0.18) 0%,
       rgba(99, 102, 241, 0.12) 20%,
       rgba(99, 102, 241, 0.06) 40%,
       transparent 70%),
-    radial-gradient(ellipse 70% 80% at 85% 75%, 
-      rgba(139, 92, 246, 0.14) 0%, 
+    radial-gradient(ellipse 70% 80% at 85% 75%,
+      rgba(139, 92, 246, 0.14) 0%,
       rgba(139, 92, 246, 0.08) 25%,
       rgba(139, 92, 246, 0.03) 50%,
       transparent 75%),
-    radial-gradient(ellipse 90% 70% at 50% 50%, 
-      rgba(79, 70, 229, 0.08) 0%, 
+    radial-gradient(ellipse 90% 70% at 50% 50%,
+      rgba(79, 70, 229, 0.08) 0%,
       rgba(79, 70, 229, 0.04) 30%,
       rgba(79, 70, 229, 0.015) 60%,
       transparent 85%),
-    radial-gradient(ellipse 60% 50% at 70% 30%, 
-      rgba(124, 58, 237, 0.06) 0%, 
+    radial-gradient(ellipse 60% 50% at 70% 30%,
+      rgba(124, 58, 237, 0.06) 0%,
       rgba(124, 58, 237, 0.02) 40%,
       transparent 70%);
   pointer-events: none;
@@ -174,7 +174,9 @@ button {
 }
 
 /* Инпуты */
-input, textarea, select {
+input,
+textarea,
+select {
   font-family: inherit;
   font-size: 14px;
   padding: 10px 14px;
@@ -186,7 +188,9 @@ input, textarea, select {
   transition: all 0.2s ease;
 }
 
-input:focus, textarea:focus, select:focus {
+input:focus,
+textarea:focus,
+select:focus {
   border-color: var(--accent-primary);
   box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.2);
 }
@@ -198,24 +202,37 @@ textarea {
 
 /* Анимации */
 @keyframes fadeIn {
-  from { opacity: 0; }
-  to { opacity: 1; }
+  from {
+    opacity: 0;
+  }
+
+  to {
+    opacity: 1;
+  }
 }
 
 @keyframes slideUp {
-  from { 
+  from {
     opacity: 0;
     transform: translateY(20px);
   }
-  to { 
+
+  to {
     opacity: 1;
     transform: translateY(0);
   }
 }
 
 @keyframes pulse {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.5; }
+
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.5;
+  }
 }
 
 .animate-fadeIn {
@@ -293,4 +310,74 @@ textarea {
   white-space: nowrap;
   z-index: 100;
   animation: fadeIn 0.2s ease;
+}
+
+/* =====================================================
+   RESPONSIVE STYLES
+   ===================================================== */
+
+/* Tablet breakpoint */
+@media (max-width: 1024px) {
+  :root {
+    --cell-height: 50px;
+    --hour-height: 60px;
+  }
+}
+
+/* Mobile breakpoint */
+@media (max-width: 768px) {
+  :root {
+    --cell-height: 40px;
+    --hour-height: 50px;
+  }
+
+  body {
+    font-size: 14px;
+  }
+
+  /* Touch-friendly buttons */
+  .btn {
+    padding: 12px 16px;
+    min-height: 44px;
+    font-size: 14px;
+  }
+
+  /* Modal adjustments for mobile */
+  .modal-overlay {
+    padding: 0;
+    align-items: flex-end;
+  }
+
+  .modal-content {
+    width: 100%;
+    max-width: 100%;
+    max-height: 90vh;
+    border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+    padding: 20px;
+  }
+
+  /* Hide tooltips on touch devices */
+  [data-tooltip]:hover::after {
+    display: none;
+  }
+
+  /* Utility classes */
+  .hide-mobile {
+    display: none !important;
+  }
+}
+
+/* Show only on mobile */
+@media (min-width: 769px) {
+  .show-mobile-only {
+    display: none !important;
+  }
+}
+
+/* Small mobile */
+@media (max-width: 480px) {
+  .btn {
+    padding: 10px 12px;
+    font-size: 13px;
+  }
 }

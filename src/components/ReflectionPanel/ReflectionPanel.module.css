@@ -131,3 +131,73 @@
         opacity: 1;
     }
 }
+
+/* =====================================================
+   RESPONSIVE STYLES
+   ===================================================== */
+
+@media (max-width: 768px) {
+    .reflectionPanel {
+        padding: 16px;
+    }
+
+    .header {
+        margin-bottom: 24px;
+    }
+
+    .header h2 {
+        font-size: 22px;
+    }
+
+    .section {
+        padding: 16px;
+    }
+
+    .section h3 {
+        font-size: 16px;
+    }
+
+    .projectInput {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .projectLabel {
+        min-width: auto;
+        align-self: flex-start;
+    }
+
+    .actions {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .actions button {
+        width: 100%;
+    }
+}
+
+@media (max-width: 480px) {
+    .reflectionPanel {
+        padding: 12px;
+    }
+
+    .header h2 {
+        font-size: 20px;
+    }
+
+    .section {
+        padding: 14px;
+    }
+
+    .sectionNumber {
+        width: 24px;
+        height: 24px;
+        font-size: 12px;
+    }
+
+    .projectLabel {
+        font-size: 12px;
+        padding: 6px 10px;
+    }
+}

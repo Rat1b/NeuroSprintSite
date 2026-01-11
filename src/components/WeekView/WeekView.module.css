@@ -222,10 +222,141 @@
 }
 
 /* Legacy styles - keep for compatibility */
-.foundation {}
 
-.drive {}
+/* =====================================================
+   RESPONSIVE STYLES
+   ===================================================== */
 
-.joy {}
+/* Collapsible sidebar toggle button */
+.sidebarToggle {
+    display: none;
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--accent-gradient);
+    border: none;
+    color: white;
+    font-size: 1.5rem;
+    box-shadow: 0 4px 20px rgba(99, 102, 241, 0.4);
+    z-index: 100;
+    cursor: pointer;
+    transition: transform 0.2s;
+}
 
-.reflection {}
+.sidebarToggle:hover {
+    transform: scale(1.1);
+}
+
+/* Mobile sidebar overlay */
+.sidebarOverlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    z-index: 99;
+}
+
+.sidebarOverlay.open {
+    display: block;
+}
+
+@media (max-width: 1024px) {
+    .weekView {
+        gap: 10px;
+        padding: 16px;
+    }
+
+    .sidebar {
+        width: 240px;
+    }
+
+    .daysContainer {
+        gap: 10px;
+    }
+
+    .bigNumber {
+        font-size: 40px;
+    }
+}
+
+@media (max-width: 768px) {
+    .weekView {
+        flex-direction: column;
+        padding: 12px;
+        gap: 12px;
+    }
+
+    /* Sidebar becomes modal-like on mobile */
+    .sidebar {
+        position: fixed;
+        top: 0;
+        left: -300px;
+        width: 280px;
+        max-width: 85vw;
+        height: 100%;
+        background: var(--bg-secondary);
+        border-right: 1px solid var(--border-color);
+        z-index: 100;
+        padding: 20px;
+        transition: left 0.3s ease;
+        overflow-y: auto;
+    }
+
+    .sidebar.open {
+        left: 0;
+    }
+
+    .sidebarToggle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Days stack vertically */
+    .daysContainer {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .budgetCard h3,
+    .statsCard h3,
+    .projectsCard h3 {
+        font-size: 13px;
+    }
+
+    .bigNumber {
+        font-size: 36px;
+    }
+}
+
+@media (max-width: 480px) {
+    .weekView {
+        padding: 8px;
+        gap: 8px;
+    }
+
+    .daysContainer {
+        gap: 8px;
+    }
+
+    .budgetInput input {
+        width: 60px;
+        font-size: 16px;
+        padding: 6px;
+    }
+
+    .bigNumber {
+        font-size: 32px;
+    }
+
+    .progressText,
+    .statLabel,
+    .statValue,
+    .projectTime {
+        font-size: 12px;
+    }
+}
