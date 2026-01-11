@@ -324,8 +324,9 @@ textarea {
   }
 }
 
-/* Mobile breakpoint */
-@media (max-width: 768px) {
+/* Mobile breakpoint - also applies to tablets in portrait */
+@media (max-width: 768px),
+(max-width: 1024px) and (orientation: portrait) {
   :root {
     --cell-height: 40px;
     --hour-height: 50px;

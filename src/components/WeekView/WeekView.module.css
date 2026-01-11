@@ -283,7 +283,8 @@
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 768px),
+(max-width: 1024px) and (orientation: portrait) {
     .weekView {
         flex-direction: column;
         padding: 12px;

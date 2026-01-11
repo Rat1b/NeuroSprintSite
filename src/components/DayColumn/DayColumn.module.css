@@ -140,7 +140,8 @@
     }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 768px),
+(max-width: 1024px) and (orientation: portrait) {
     .dayColumn {
         min-width: 100%;
         width: 100%;

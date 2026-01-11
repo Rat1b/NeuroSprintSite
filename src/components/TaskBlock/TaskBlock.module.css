@@ -254,7 +254,8 @@
    RESPONSIVE STYLES
    ===================================================== */
 
-@media (max-width: 768px) {
+@media (max-width: 768px),
+(max-width: 1024px) and (orientation: portrait) {
 
     /* Hide actions by default on mobile - show on tap */
     .taskActions {
