@@ -124,7 +124,7 @@ export function TaskBlock({ task, onEdit }: TaskBlockProps) {
                         onClick={handleDuplicate}
                         title="Дублировать"
                     >
-                        🔁
+                        📄📄
                     </button>
 
                     {/* Center spacer */}
