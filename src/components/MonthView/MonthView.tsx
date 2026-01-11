@@ -290,6 +290,12 @@ export function MonthView({ onOpenWeek }: MonthViewProps) {
                                 </div>
 
                                 <div className={styles.weekStats}>
+                                    {weekData?.reflection?.saved && (
+                                        <div className={styles.statItem} title="Рефлексия написана">
+                                            <div className={styles.statValue}>📝</div>
+                                            <div className={styles.statLabel}>отчёт</div>
+                                        </div>
+                                    )}
                                     <div className={styles.statItem}>
                                         <div className={styles.statValue}>{totalTasks}</div>
                                         <div className={styles.statLabel}>задач</div>

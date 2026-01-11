@@ -24,6 +24,88 @@
     font-size: 14px;
 }
 
+.weekInfo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 8px;
+    flex-wrap: wrap;
+}
+
+.sprintNumber {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.dateRange {
+    font-size: 14px;
+    color: var(--text-secondary);
+}
+
+.currentBadge {
+    background: var(--accent-gradient);
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 500;
+    text-transform: uppercase;
+}
+
+.subtitle {
+    color: var(--text-secondary);
+    font-size: 14px;
+    text-align: center;
+    margin-bottom: 16px;
+}
+
+/* Report View - read-only mode */
+.reportView {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.reportSection {
+    background: var(--bg-card);
+    border-radius: var(--radius-md);
+    border: 1px solid var(--border-color);
+    padding: 20px;
+}
+
+.reportSection h3 {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 16px;
+    color: var(--text-primary);
+}
+
+.reportItems {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.reportItem {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+}
+
+.reportItem p {
+    flex: 1;
+    color: var(--text-primary);
+    line-height: 1.5;
+    margin: 0;
+}
+
+.adjustmentsText {
+    color: var(--text-primary);
+    line-height: 1.6;
+    margin: 0;
+}
+
 .sections {
     display: flex;
     flex-direction: column;

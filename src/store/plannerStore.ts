@@ -6,6 +6,7 @@ import { DEFAULT_MONTH_SETTINGS } from '../types';
 
 // Создать пустую рефлексию
 const createEmptyReflection = (): WeeklyReflection => ({
+    saved: false,
     done: { foundation: '', drive: '', joy: '' },
     notDone: { foundation: '', drive: '', joy: '' },
     adjustments: '',

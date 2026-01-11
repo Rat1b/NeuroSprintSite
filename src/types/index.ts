@@ -18,6 +18,7 @@ export interface Task {
 
 // Еженедельная рефлексия
 export interface WeeklyReflection {
+  saved: boolean; // true if reflection is finalized
   done: {
     foundation: string;
     drive: string;
