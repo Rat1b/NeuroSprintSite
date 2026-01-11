@@ -136,12 +136,26 @@ export function TaskModal({ isOpen, onClose, task, defaultDay }: TaskModalProps)
 
                         <div className={styles.formGroup}>
                             <label>Длительность (мин)</label>
-                            <input
-                                type="number"
-                                value={duration}
-                                onChange={(e) => setDuration(Math.max(1, parseInt(e.target.value) || 0))}
-                                min={1}
-                            />
+                            <div className={styles.durationRow}>
+                                <input
+                                    type="number"
+                                    value={duration}
+                                    onChange={(e) => setDuration(parseInt(e.target.value) || 0)}
+                                    min={0}
+                                />
+                                <div className={styles.durationPresets}>
+                                    {[10, 30, 45].map((preset) => (
+                                        <button
+                                            key={preset}
+                                            type="button"
+                                            className={`${styles.presetBtn} ${duration === preset ? styles.presetActive : ''}`}
+                                            onClick={() => setDuration(preset)}
+                                        >
+                                            {preset}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
                         </div>
 
                         <div className={styles.formGroup}>

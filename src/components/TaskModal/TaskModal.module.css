@@ -132,6 +132,44 @@
     margin-top: 24px;
 }
 
+.durationRow {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.durationPresets {
+    display: flex;
+    gap: 8px;
+}
+
+.presetBtn {
+    flex: 1;
+    padding: 6px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-sm);
+    font-size: 13px;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.presetBtn:hover {
+    background: var(--bg-hover);
+    color: var(--text-primary);
+}
+
+.presetActive {
+    background: var(--accent-primary);
+    border-color: var(--accent-primary);
+    color: white;
+}
+
+.presetActive:hover {
+    background: var(--accent-hover);
+}
+
 @keyframes fadeIn {
     from {
         opacity: 0;
@@ -170,7 +208,11 @@
         max-height: 90vh;
         border-radius: 20px 20px 0 0;
         padding: 20px;
+        padding-bottom: 40vh;
+        /* Extra padding for keyboard */
         animation: slideUpMobile 0.3s ease;
+        overflow-y: auto;
+        /* Ensure scrolling is enabled */
     }
 
     .modalHeader h2 {
