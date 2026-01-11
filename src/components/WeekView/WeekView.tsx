@@ -4,6 +4,7 @@ import {
     closestCorners,
     KeyboardSensor,
     PointerSensor,
+    TouchSensor,
     useSensor,
     useSensors,
 } from '@dnd-kit/core';
@@ -50,10 +51,17 @@ export function WeekView({ onAddTask, onEditTask }: WeekViewProps) {
         };
     }, []);
 
+    // Sensors for drag-and-drop (desktop + mobile touch)
     const sensors = useSensors(
         useSensor(PointerSensor, {
             activationConstraint: {
                 distance: 8,
+            },
+        }),
+        useSensor(TouchSensor, {
+            activationConstraint: {
+                delay: 150,
+                tolerance: 5,
             },
         }),
         useSensor(KeyboardSensor, {
