@@ -47,6 +47,7 @@ export function Header({ onImportClick, onAIInstructionsClick }: HeaderProps) {
 
     const formatMonthYear = (dateStr: string) => {
         const date = new Date(dateStr + 'T12:00:00');
+        date.setDate(date.getDate() + 3); // Месяц определяется по четвергу (ISO-8601)
         return `${MONTH_NAMES[date.getMonth()]} ${date.getFullYear()}`;
     };
 

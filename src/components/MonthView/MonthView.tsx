@@ -17,6 +17,8 @@ const toLocalYYYYMMDD = (d: Date) => {
 // Получить название месяца и год
 function getMonthTitle(weekStart: string): string {
     const date = new Date(weekStart + 'T12:00:00');
+    // Месяц определяется по четвергу этой недели (ISO-8601 правило)
+    date.setDate(date.getDate() + 3);
     const monthNames = [
         'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
         'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'
@@ -24,29 +26,21 @@ function getMonthTitle(weekStart: string): string {
     return `${monthNames[date.getMonth()]} ${date.getFullYear()}`;
 }
 
-// Получить диапазон дат месяца (от первого понедельника до конца)
-function getMonthDateRange(weekStart: string): string {
-    const startDate = new Date(weekStart + 'T12:00:00');
+// Получить диапазон дат месяца
+function getMonthDateRange(viewWeeks: string[]): string {
+    if (!viewWeeks || viewWeeks.length === 0) return '';
 
-    // Начало: первый понедельник месяца или текущая неделя
-    const firstDayOfMonth = new Date(startDate.getFullYear(), startDate.getMonth(), 1, 12, 0, 0);
-    const dayOfWeek = firstDayOfMonth.getDay();
-    const daysToMonday = dayOfWeek === 0 ? 1 : (dayOfWeek === 1 ? 0 : 8 - dayOfWeek);
-    const firstMonday = new Date(firstDayOfMonth);
-    firstMonday.setDate(firstDayOfMonth.getDate() + daysToMonday);
+    const firstWeek = new Date(viewWeeks[0] + 'T12:00:00');
+    const lastWeek = new Date(viewWeeks[viewWeeks.length - 1] + 'T12:00:00');
 
-    // Конец: последний день месяца или первые дни следующего
-    const lastDayOfMonth = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0, 12, 0, 0);
-    const endDayOfWeek = lastDayOfMonth.getDay();
-    const daysToSunday = endDayOfWeek === 0 ? 0 : 7 - endDayOfWeek;
-    const endDate = new Date(lastDayOfMonth);
-    endDate.setDate(lastDayOfMonth.getDate() + daysToSunday);
+    // Конец последней недели (воскресенье)
+    lastWeek.setDate(lastWeek.getDate() + 6);
 
     const formatDate = (d: Date) => {
         return d.toLocaleDateString('ru-RU', { day: 'numeric', month: 'short' });
     };
 
-    return `${formatDate(firstMonday)} — ${formatDate(endDate)}`;
+    return `${formatDate(firstWeek)} — ${formatDate(lastWeek)}`;
 }
 
 function formatWeekDates(weekStart: string): string {
@@ -235,7 +229,7 @@ export function MonthView({ onOpenWeek }: MonthViewProps) {
                         {getMonthTitle(currentWeek.weekStart)}
                     </h2>
                     <div className={styles.monthDateRange}>
-                        {getMonthDateRange(currentWeek.weekStart)}
+                        {getMonthDateRange(viewWeeks)}
                     </div>
                 </div>
 
