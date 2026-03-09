@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
 import { v4 as uuidv4 } from 'uuid';
-import type { Task, WeekPlan, WeeklyReflection, DayOfWeek, AIJsonImport, MonthSettings, MonthSettingsMap } from '../types';
+import type { Task, WeekPlan, WeeklyReflection, DayOfWeek, AIJsonImport, MonthSettings } from '../types';
 import { DEFAULT_MONTH_SETTINGS } from '../types';
 
 // Создать пустую рефлексию
@@ -43,7 +43,7 @@ interface PlannerStore {
     currentWeek: WeekPlan;
     weeks: WeekPlan[];
     activeView: 'planner' | 'reflection' | 'month';
-    monthSettings: MonthSettingsMap;
+    cycleSettings: MonthSettings;
     sprintResetWeeks: string[];  // Даты недель где нумерация сбрасывается на 1.1
 
     // Действия с задачами
@@ -69,9 +69,9 @@ interface PlannerStore {
     goToWeek: (weekStart: string) => void;
     createNewWeek: () => void;
 
-    // Настройки месяца
-    getMonthSettings: (monthKey: string) => MonthSettings;
-    setMonthSettings: (monthKey: string, settings: Partial<MonthSettings>) => void;
+    // Настройки цикла (глобальные)
+    getCycleSettings: () => MonthSettings;
+    setCycleSettings: (settings: Partial<MonthSettings>) => void;
 
     // Точки сброса спринтов
     toggleSprintReset: (weekStart: string) => void;
@@ -90,7 +90,7 @@ export const usePlannerStore = create<PlannerStore>()(
             currentWeek: createEmptyWeekPlan(),
             weeks: [],
             activeView: 'planner',
-            monthSettings: {},
+            cycleSettings: DEFAULT_MONTH_SETTINGS,
             sprintResetWeeks: [],
 
             addTask: (taskData) => {
@@ -330,19 +330,16 @@ export const usePlannerStore = create<PlannerStore>()(
                 });
             },
 
-            getMonthSettings: (monthKey: string): MonthSettings => {
-                const { monthSettings } = get();
-                return { ...DEFAULT_MONTH_SETTINGS, ...(monthSettings[monthKey] || {}) };
+            getCycleSettings: (): MonthSettings => {
+                const { cycleSettings } = get();
+                return { ...DEFAULT_MONTH_SETTINGS, ...(cycleSettings || {}) };
             },
 
-            setMonthSettings: (monthKey: string, settings: Partial<MonthSettings>) => {
+            setCycleSettings: (settings: Partial<MonthSettings>) => {
                 set((state) => ({
-                    monthSettings: {
-                        ...state.monthSettings,
-                        [monthKey]: {
-                            ...(state.monthSettings[monthKey] || DEFAULT_MONTH_SETTINGS),
-                            ...settings,
-                        },
+                    cycleSettings: {
+                        ...state.cycleSettings,
+                        ...settings,
                     },
                 }));
             },
@@ -365,7 +362,7 @@ export const usePlannerStore = create<PlannerStore>()(
                     exportDate: new Date().toISOString(),
                     currentWeek: state.currentWeek,
                     weeks: state.weeks,
-                    monthSettings: state.monthSettings,
+                    cycleSettings: state.cycleSettings,
                     sprintResetWeeks: state.sprintResetWeeks,
                 };
                 return JSON.stringify(exportData, null, 2);
@@ -380,7 +377,7 @@ export const usePlannerStore = create<PlannerStore>()(
                     set({
                         currentWeek: data.currentWeek,
                         weeks: data.weeks,
-                        monthSettings: data.monthSettings || {},
+                        cycleSettings: data.cycleSettings || DEFAULT_MONTH_SETTINGS,
                         sprintResetWeeks: data.sprintResetWeeks || [],
                     });
                     return true;
@@ -460,7 +457,7 @@ export const usePlannerStore = create<PlannerStore>()(
         }),
         {
             name: 'neurosprint-planner',
-            version: 3,
+            version: 4,
             migrate: (persistedState: unknown, version: number) => {
                 const state = persistedState as Record<string, any>;
 
@@ -511,6 +508,27 @@ export const usePlannerStore = create<PlannerStore>()(
                     if (Array.isArray(state.sprintResetWeeks)) {
                         state.sprintResetWeeks = state.sprintResetWeeks.map(shiftToMonday);
                     }
+                }
+
+                if (version < 4) {
+                    // Миграция к версии 4: Глобальные настройки вместо monthSettings
+                    let globalSettings = { ...DEFAULT_MONTH_SETTINGS };
+
+                    if (state.monthSettings) {
+                        const oldSettings = state.monthSettings as Record<string, any>;
+                        const keys = Object.keys(oldSettings);
+                        if (keys.length > 0) {
+                            // Берем настройки из последнего редактируемого месяца (сортируем ключи "YYYY-MM")
+                            const lastKey = keys.sort().pop();
+                            if (lastKey) {
+                                globalSettings = { ...globalSettings, ...oldSettings[lastKey] };
+                            }
+                        }
+                        // Удаляем старый словарь
+                        delete state.monthSettings;
+                    }
+
+                    state.cycleSettings = globalSettings;
                 }
 
                 return state as never;

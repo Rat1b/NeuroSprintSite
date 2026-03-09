@@ -6,13 +6,6 @@ interface MonthViewProps {
     onOpenWeek: (weekStart: string) => void;
 }
 
-// Получить ключ месяца из даты недели (YYYY-MM)
-function getMonthKey(weekStart: string): string {
-    const date = new Date(weekStart + 'T12:00:00');
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    return `${year}-${month}`;
-}
 
 const toLocalYYYYMMDD = (d: Date) => {
     const y = d.getFullYear();
@@ -65,19 +58,33 @@ function formatWeekDates(weekStart: string): string {
     return `${start.toLocaleDateString('ru-RU', options)} — ${end.toLocaleDateString('ru-RU', options)}`;
 }
 
-// Генерировать недели для текущего месяца/квартала
+// Генерировать недели строго для месяца, к которому относится currentWeekStart
 function generateWeeksForView(currentWeekStart: string): string[] {
     const current = new Date(currentWeekStart + 'T12:00:00');
+    const year = current.getFullYear();
+    const month = current.getMonth();
+
     const weeks: string[] = [];
 
-    // Показываем 8 недель (2 месяца примерно)
-    const start = new Date(current);
-    start.setDate(start.getDate() - 7 * 2); // 2 недели назад
+    // Первое число месяца
+    const firstDay = new Date(year, month, 1, 12, 0, 0);
 
-    for (let i = 0; i < 8; i++) {
-        const weekDate = new Date(start);
-        weekDate.setDate(weekDate.getDate() + (i * 7));
-        weeks.push(toLocalYYYYMMDD(weekDate));
+    // Понедельник недели, к которой относится 1-е число
+    const dayOfWeek = firstDay.getDay(); // 0(Вс), 1(Пн)... 6(Сб)
+    const diffToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+
+    const startWeek = new Date(firstDay);
+    startWeek.setDate(firstDay.getDate() - diffToMonday);
+
+    // Последний день месяца
+    const lastDay = new Date(year, month + 1, 0, 12, 0, 0);
+
+    const currentWeekIter = new Date(startWeek);
+
+    // Генерируем недели, пока дата начала недели (понедельник) не выйдет за пределы месяца
+    while (currentWeekIter <= lastDay) {
+        weeks.push(toLocalYYYYMMDD(currentWeekIter));
+        currentWeekIter.setDate(currentWeekIter.getDate() + 7);
     }
 
     return weeks;
@@ -87,16 +94,15 @@ export function MonthView({ onOpenWeek }: MonthViewProps) {
     const {
         currentWeek,
         weeks,
-        getMonthSettings,
-        setMonthSettings,
+        getCycleSettings,
+        setCycleSettings,
         sprintResetWeeks,
         toggleSprintReset
     } = usePlannerStore();
     const [showSettings, setShowSettings] = useState(false);
     const settingsRef = useRef<HTMLDivElement>(null);
 
-    const monthKey = getMonthKey(currentWeek.weekStart);
-    const settings = getMonthSettings(monthKey);
+    const settings = getCycleSettings();
 
     const viewWeeks = generateWeeksForView(currentWeek.weekStart);
 
@@ -265,7 +271,7 @@ export function MonthView({ onOpenWeek }: MonthViewProps) {
                                     <label>Длина спринта (недель)</label>
                                     <select
                                         value={settings.sprintWeeks}
-                                        onChange={(e) => setMonthSettings(monthKey, {
+                                        onChange={(e) => setCycleSettings({
                                             sprintWeeks: Number(e.target.value)
                                         })}
                                     >
@@ -279,7 +285,7 @@ export function MonthView({ onOpenWeek }: MonthViewProps) {
                                     <label>Интеграция каждые (спринтов)</label>
                                     <select
                                         value={settings.integrationEvery}
-                                        onChange={(e) => setMonthSettings(monthKey, {
+                                        onChange={(e) => setCycleSettings({
                                             integrationEvery: Number(e.target.value)
                                         })}
                                     >
@@ -293,7 +299,7 @@ export function MonthView({ onOpenWeek }: MonthViewProps) {
                                     <label>Расширенных инт. недель</label>
                                     <select
                                         value={settings.bigIntegrationWeeks}
-                                        onChange={(e) => setMonthSettings(monthKey, {
+                                        onChange={(e) => setCycleSettings({
                                             bigIntegrationWeeks: Number(e.target.value)
                                         })}
                                     >
@@ -306,7 +312,7 @@ export function MonthView({ onOpenWeek }: MonthViewProps) {
                                     <label>Расш. интеграция каждые (циклов)</label>
                                     <select
                                         value={settings.bigIntegrationEvery}
-                                        onChange={(e) => setMonthSettings(monthKey, {
+                                        onChange={(e) => setCycleSettings({
                                             bigIntegrationEvery: Number(e.target.value)
                                         })}
                                     >
