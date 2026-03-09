@@ -27,7 +27,7 @@ export function Header({ onImportClick, onAIInstructionsClick }: HeaderProps) {
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
     const formatWeekDate = (dateStr: string) => {
-        const date = new Date(dateStr);
+        const date = new Date(dateStr + 'T12:00:00');
         const endDate = new Date(date);
         endDate.setDate(endDate.getDate() + 6);
 
@@ -39,12 +39,12 @@ export function Header({ onImportClick, onAIInstructionsClick }: HeaderProps) {
     };
 
     const formatMonthYear = (dateStr: string) => {
-        const date = new Date(dateStr);
+        const date = new Date(dateStr + 'T12:00:00');
         return `${MONTH_NAMES[date.getMonth()]} ${date.getFullYear()}`;
     };
 
     const handlePrevWeek = () => {
-        const currentDate = new Date(currentWeek.weekStart);
+        const currentDate = new Date(currentWeek.weekStart + 'T12:00:00');
         currentDate.setDate(currentDate.getDate() - 7);
         // Не позволяем перейти раньше 2026 года
         if (currentDate.getFullYear() < 2026) return;
@@ -52,13 +52,13 @@ export function Header({ onImportClick, onAIInstructionsClick }: HeaderProps) {
     };
 
     const handleNextWeek = () => {
-        const currentDate = new Date(currentWeek.weekStart);
+        const currentDate = new Date(currentWeek.weekStart + 'T12:00:00');
         currentDate.setDate(currentDate.getDate() + 7);
         goToWeek(currentDate.toISOString().split('T')[0]);
     };
 
     const handlePrevMonth = () => {
-        const currentDate = new Date(currentWeek.weekStart);
+        const currentDate = new Date(currentWeek.weekStart + 'T12:00:00');
         currentDate.setMonth(currentDate.getMonth() - 1);
         // Не позволяем перейти раньше 2026 года
         if (currentDate.getFullYear() < 2026) return;
@@ -71,7 +71,7 @@ export function Header({ onImportClick, onAIInstructionsClick }: HeaderProps) {
     };
 
     const handleNextMonth = () => {
-        const currentDate = new Date(currentWeek.weekStart);
+        const currentDate = new Date(currentWeek.weekStart + 'T12:00:00');
         currentDate.setMonth(currentDate.getMonth() + 1);
         // Перейти на первый понедельник нового месяца
         const firstDay = new Date(currentDate.getFullYear(), currentDate.getMonth(), 1);
@@ -136,8 +136,8 @@ export function Header({ onImportClick, onAIInstructionsClick }: HeaderProps) {
     };
 
     const actualWeekStart = getActualCurrentWeekStart();
-    const currentDate = new Date(currentWeek.weekStart);
-    const actualDate = new Date(actualWeekStart);
+    const currentDate = new Date(currentWeek.weekStart + 'T12:00:00');
+    const actualDate = new Date(actualWeekStart + 'T12:00:00');
 
     const isCurrentWeek = currentWeek.weekStart === actualWeekStart;
     const isCurrentMonth = currentDate.getMonth() === actualDate.getMonth() &&

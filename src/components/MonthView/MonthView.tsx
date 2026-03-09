@@ -8,7 +8,7 @@ interface MonthViewProps {
 
 // Получить ключ месяца из даты недели (YYYY-MM)
 function getMonthKey(weekStart: string): string {
-    const date = new Date(weekStart);
+    const date = new Date(weekStart + 'T12:00:00');
     const year = date.getFullYear();
     const month = String(date.getMonth() + 1).padStart(2, '0');
     return `${year}-${month}`;
@@ -16,7 +16,7 @@ function getMonthKey(weekStart: string): string {
 
 // Получить название месяца и год
 function getMonthTitle(weekStart: string): string {
-    const date = new Date(weekStart);
+    const date = new Date(weekStart + 'T12:00:00');
     const monthNames = [
         'Январь', 'Февраль', 'Март', 'Апрель', 'Май', 'Июнь',
         'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'
@@ -26,17 +26,17 @@ function getMonthTitle(weekStart: string): string {
 
 // Получить диапазон дат месяца (от первого понедельника до конца)
 function getMonthDateRange(weekStart: string): string {
-    const startDate = new Date(weekStart);
+    const startDate = new Date(weekStart + 'T12:00:00');
 
     // Начало: первый понедельник месяца или текущая неделя
-    const firstDayOfMonth = new Date(startDate.getFullYear(), startDate.getMonth(), 1);
+    const firstDayOfMonth = new Date(startDate.getFullYear(), startDate.getMonth(), 1, 12, 0, 0);
     const dayOfWeek = firstDayOfMonth.getDay();
     const daysToMonday = dayOfWeek === 0 ? 1 : (dayOfWeek === 1 ? 0 : 8 - dayOfWeek);
     const firstMonday = new Date(firstDayOfMonth);
     firstMonday.setDate(firstDayOfMonth.getDate() + daysToMonday);
 
     // Конец: последний день месяца или первые дни следующего
-    const lastDayOfMonth = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0);
+    const lastDayOfMonth = new Date(startDate.getFullYear(), startDate.getMonth() + 1, 0, 12, 0, 0);
     const endDayOfWeek = lastDayOfMonth.getDay();
     const daysToSunday = endDayOfWeek === 0 ? 0 : 7 - endDayOfWeek;
     const endDate = new Date(lastDayOfMonth);
@@ -50,7 +50,7 @@ function getMonthDateRange(weekStart: string): string {
 }
 
 function formatWeekDates(weekStart: string): string {
-    const start = new Date(weekStart);
+    const start = new Date(weekStart + 'T12:00:00');
     const end = new Date(start);
     end.setDate(end.getDate() + 6);
 
@@ -60,7 +60,7 @@ function formatWeekDates(weekStart: string): string {
 
 // Генерировать недели для текущего месяца/квартала
 function generateWeeksForView(currentWeekStart: string): string[] {
-    const current = new Date(currentWeekStart);
+    const current = new Date(currentWeekStart + 'T12:00:00');
     const weeks: string[] = [];
 
     // Показываем 8 недель (2 месяца примерно)
@@ -120,8 +120,8 @@ export function MonthView({ onOpenWeek }: MonthViewProps) {
 
         // Функция для расчёта разницы в неделях
         const getWeeksDiff = (fromDate: string, toDate: string): number => {
-            const from = new Date(fromDate + 'T00:00:00Z');
-            const to = new Date(toDate + 'T00:00:00Z');
+            const from = new Date(fromDate + 'T12:00:00Z');
+            const to = new Date(toDate + 'T12:00:00Z');
             const diffMs = to.getTime() - from.getTime();
             return Math.round(diffMs / (7 * 24 * 60 * 60 * 1000));
         };
