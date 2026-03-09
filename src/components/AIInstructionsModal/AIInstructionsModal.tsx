@@ -40,7 +40,7 @@ const AI_PROMPT = `
 1. Проанализируй задачи пользователя. Если не хватает категорий "Кайф" или "Фундамент", предложи их добавить.
 2. Не используй markdown-форматирование (без \`\`\`json). Возвращай только валидный JSON.
 
-ФОРМАТ JSON:
+ФОРМАТ JSON для импорта:
 {
   "tasks": [
     {
@@ -65,14 +65,32 @@ const AI_PROMPT = `
 3. "startTime": ДОБАВЛЯТЬ ТОЛЬКО ЕСЛИ ПОЛЬЗОВАТЕЛЬ УКАЗАЛ ВРЕМЯ. Если времени нет в запросе — не создавай это поле.
 `;
 
+const AI_ANALYSIS_PROMPT = `
+Привет, ChatGPT/Claude! Я прикрепляю JSON-файл с моим расписанием, статистикой и еженедельными рефлексиями по системе "Нейроспринт". 
+
+В системе есть проекты:
+• "Фундамент" (база, здоровье, спорт)
+• "Драйв" (карьера, сложные бизнес-задачи)
+• "Кайф" (отдых, хобби, удовольствия)
+
+Проанализируй мои спринты и ответь на следующие вопросы:
+1. Найди закономерности: какие задачи из каких проектов я чаще всего не выполняю до конца?
+2. Есть ли перекос между проектами (например, слишком много "Драйва" и мало "Фундамента" или "Кайфа")?
+3. Проанализируй тексты моих рефлексий: какие ошибки я повторяю из недели в неделю?
+4. На основе моего темпа выполнения и ошибок — предложи, как улучшить фокус в проекте "Фундамент" и какие 2-3 практические корректировки мне стоит внести в планирование на следующую неделю.
+`;
+
 export function AIInstructionsModal({ isOpen, onClose }: AIInstructionsModalProps) {
+    const [activeTab, setActiveTab] = useState<'import' | 'export'>('import');
     const [copied, setCopied] = useState(false);
 
     if (!isOpen) return null;
 
+    const currentPrompt = activeTab === 'import' ? AI_PROMPT : AI_ANALYSIS_PROMPT;
+
     const handleCopy = async () => {
         try {
-            await navigator.clipboard.writeText(AI_PROMPT);
+            await navigator.clipboard.writeText(currentPrompt);
             setCopied(true);
             setTimeout(() => setCopied(false), 2000);
         } catch (err) {
@@ -88,14 +106,41 @@ export function AIInstructionsModal({ isOpen, onClose }: AIInstructionsModalProp
                     <button className={styles.closeBtn} onClick={onClose}>×</button>
                 </div>
 
-                <p className={styles.description}>
-                    Скопируй этот промпт и отправь его в ChatGPT, Claude или другому ИИ-ассистенту.
-                    Он поможет составить план недели и выдаст JSON для импорта.
-                </p>
+                <div className={styles.tabs}>
+                    <button
+                        className={`${styles.tabBtn} ${activeTab === 'import' ? styles.activeTab : ''}`}
+                        onClick={() => setActiveTab('import')}
+                    >
+                        📝 Создание плана (Импорт)
+                    </button>
+                    <button
+                        className={`${styles.tabBtn} ${activeTab === 'export' ? styles.activeTab : ''}`}
+                        onClick={() => setActiveTab('export')}
+                    >
+                        📊 Анализ итогов (Экспорт)
+                    </button>
+                </div>
 
-                <div className={styles.promptContainer}>
-                    <div className={styles.promptText}>
-                        {AI_PROMPT}
+                <div className={styles.tabContent}>
+                    {activeTab === 'import' ? (
+                        <p className={styles.description}>
+                            Скопируй этот промпт и отправь его в ChatGPT или Claude. Опиши свои задачи словами. Нейросеть составит план недели и выдаст JSON для <b>Импорта</b>.
+                        </p>
+                    ) : (
+                        <div className={styles.description}>
+                            <p><b>Как проанализировать свои спринты:</b></p>
+                            <ol>
+                                <li>Нажми кнопку <b>"🤖 Экспорт для ИИ"</b> в шапке приложения.</li>
+                                <li>Скопируй промпт ниже.</li>
+                                <li>Открой ChatGPT или Claude, прикрепи скачанный <b>.json</b> файл и вставь скопированный промпт. Нейросеть найдет неочевидные закономерности в твоей статистике.</li>
+                            </ol>
+                        </div>
+                    )}
+
+                    <div className={styles.promptContainer}>
+                        <div className={styles.promptText}>
+                            {currentPrompt}
+                        </div>
                     </div>
                 </div>
 
