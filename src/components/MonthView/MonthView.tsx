@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useMemo } from 'react';
 import { usePlannerStore } from '../../store/plannerStore';
 import styles from './MonthView.module.css';
 
@@ -99,6 +99,17 @@ export function MonthView({ onOpenWeek }: MonthViewProps) {
     const settings = getCycleSettings();
 
     const viewWeeks = generateWeeksForView(currentWeek.weekStart);
+
+    // Вычисляем реальную текущую неделю (по настоящему календарю)
+    const realCurrentWeekStart = useMemo(() => {
+        const today = new Date();
+        today.setHours(12, 0, 0, 0);
+        const dayOfWeek = today.getDay();
+        const diffToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+        const startOfWeek = new Date(today);
+        startOfWeek.setDate(today.getDate() - diffToMonday);
+        return toLocalYYYYMMDD(startOfWeek);
+    }, []);
 
     // Закрытие dropdown при клике вне
     useEffect(() => {
@@ -325,7 +336,8 @@ export function MonthView({ onOpenWeek }: MonthViewProps) {
                 {viewWeeks.map((weekStart) => {
                     const weekType = getWeekType(weekStart);
                     const weekData = getWeekData(weekStart);
-                    const isCurrentWeek = weekStart === currentWeek.weekStart;
+                    const isSelectedWeek = weekStart === currentWeek.weekStart;
+                    const isRealCurrentWeek = weekStart === realCurrentWeekStart;
                     const hasResetPoint = isResetPoint(weekStart);
 
                     const totalTasks = weekData?.tasks.length || 0;
@@ -335,7 +347,7 @@ export function MonthView({ onOpenWeek }: MonthViewProps) {
                     return (
                         <div
                             key={weekStart}
-                            className={`${styles.weekRow} ${isCurrentWeek ? styles.currentWeek : ''} ${hasResetPoint ? styles.resetWeek : ''}`}
+                            className={`${styles.weekRow} ${isSelectedWeek ? styles.currentWeek : ''} ${hasResetPoint ? styles.resetWeek : ''}`}
                         >
                             <div className={`${styles.weekIndicator} ${styles[weekType]}`}></div>
                             <div className={styles.weekContent}>
@@ -383,7 +395,7 @@ export function MonthView({ onOpenWeek }: MonthViewProps) {
                                         className={styles.openWeekBtn}
                                         onClick={() => onOpenWeek(weekStart)}
                                     >
-                                        {isCurrentWeek ? '← Текущая' : 'Открыть →'}
+                                        {isRealCurrentWeek ? '← Текущая' : (isSelectedWeek ? '← Открыта' : 'Открыть →')}
                                     </button>
                                 </div>
                             </div>
