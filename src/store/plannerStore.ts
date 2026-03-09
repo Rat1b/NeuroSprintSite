@@ -329,7 +329,7 @@ export const usePlannerStore = create<PlannerStore>()(
 
             getMonthSettings: (monthKey: string): MonthSettings => {
                 const { monthSettings } = get();
-                return monthSettings[monthKey] || { ...DEFAULT_MONTH_SETTINGS };
+                return { ...DEFAULT_MONTH_SETTINGS, ...(monthSettings[monthKey] || {}) };
             },
 
             setMonthSettings: (monthKey: string, settings: Partial<MonthSettings>) => {
@@ -388,6 +388,32 @@ export const usePlannerStore = create<PlannerStore>()(
         }),
         {
             name: 'neurosprint-planner',
+            version: 2,
+            migrate: (persistedState: unknown, version: number) => {
+                const state = persistedState as Record<string, unknown>;
+
+                if (version < 2) {
+                    // Миграция: обновить monthSettings до нового формата
+                    const oldSettings = (state.monthSettings || {}) as Record<string, Record<string, number>>;
+                    const newSettings: Record<string, Record<string, number>> = {};
+
+                    for (const [key, ms] of Object.entries(oldSettings)) {
+                        newSettings[key] = {
+                            ...ms,
+                            // Если integrationEvery был 1 (старый дефолт), меняем на 3
+                            integrationEvery: (ms.integrationEvery === 1 || !ms.integrationEvery) ? 3 : ms.integrationEvery,
+                            // Добавляем новые поля если отсутствуют
+                            integrationWeeks: ms.integrationWeeks ?? 1,
+                            bigIntegrationWeeks: ms.bigIntegrationWeeks ?? 2,
+                            bigIntegrationEvery: ms.bigIntegrationEvery ?? 3,
+                        };
+                    }
+
+                    state.monthSettings = newSettings;
+                }
+
+                return state as never;
+            },
         }
     )
 );

@@ -128,8 +128,8 @@ export function MonthView({ onOpenWeek }: MonthViewProps) {
 
         if (lastResetDate === null) {
             // Нет точек сброса до этой недели
-            // Считаем от начала 2026 года (первый понедельник)
-            return getWeeksDiff('2025-12-29', weekStart); // Понедельник перед 1 января 2026
+            // Считаем от 12 января 2026 (начало спринтов)
+            return getWeeksDiff('2026-01-12', weekStart);
         }
 
         // Считаем недели от точки сброса
@@ -137,26 +137,61 @@ export function MonthView({ onOpenWeek }: MonthViewProps) {
     }
 
     // Получить номер спринта
+    // Суперцикл: (bigIntegrationEvery - 1) малых циклов + 1 большой цикл
+    // Малый цикл = integrationEvery спринтов + integrationWeeks инт. недель
+    // Большой цикл = integrationEvery спринтов + bigIntegrationWeeks инт. недель
     function getSprintInfo(weekStart: string): { cycle: number; week: number } | null {
         const weekIndex = getWeekIndexFromReset(weekStart);
-        const sprintWeeks = settings.sprintWeeks;
-        const integrationEvery = settings.integrationEvery;
+        const sw = settings.sprintWeeks;
+        const ie = settings.integrationEvery;
+        const iw = settings.integrationWeeks;
+        const biw = settings.bigIntegrationWeeks;
+        const bie = settings.bigIntegrationEvery;
 
-        // Полный цикл = (sprintWeeks * integrationEvery) спринт-недель + 1 интеграционная
-        const cycleLength = sprintWeeks * integrationEvery + 1;
-
-        const positionInCycle = weekIndex % cycleLength;
-
-        // Последняя неделя цикла - интеграционная
-        if (positionInCycle === cycleLength - 1) {
+        // Недели до начала спринтов — интеграционные
+        if (weekIndex < 0) {
             return null;
         }
 
-        const sprintNumber = Math.floor(positionInCycle / sprintWeeks) + 1;
-        const weekInSprint = (positionInCycle % sprintWeeks) + 1;
-        const cycleNumber = Math.floor(weekIndex / cycleLength) + 1;
+        // Малый цикл: ie спринтов (каждый sw недель) + iw интеграционных недель
+        const smallCycleLen = sw * ie + iw;
+        // Большой цикл: ie спринтов (каждый sw недель) + biw интеграционных недель
+        const bigCycleLen = sw * ie + biw;
+        // Суперцикл = (bie - 1) малых + 1 большой
+        const superCycleLen = (bie - 1) * smallCycleLen + bigCycleLen;
 
-        return { cycle: (cycleNumber - 1) * integrationEvery + sprintNumber, week: weekInSprint };
+        const posInSuper = weekIndex % superCycleLen;
+
+        // Определяем, в каком подцикле мы находимся
+        let remaining = posInSuper;
+        let subCycleIndex = 0; // 0-based index подцикла внутри суперцикла
+
+        for (let i = 0; i < bie; i++) {
+            const isLastSubCycle = (i === bie - 1);
+            const currentCycleLen = isLastSubCycle ? bigCycleLen : smallCycleLen;
+
+            if (remaining < currentCycleLen) {
+                subCycleIndex = i;
+                const sprintPartLen = sw * ie;
+
+                // Интеграционная неделя?
+                if (remaining >= sprintPartLen) {
+                    return null;
+                }
+
+                // Спринтовая неделя
+                const sprintInSubCycle = Math.floor(remaining / sw) + 1;
+                const weekInSprint = (remaining % sw) + 1;
+                const superCycleNumber = Math.floor(weekIndex / superCycleLen);
+                const globalSprintNumber = superCycleNumber * (ie * bie) + subCycleIndex * ie + sprintInSubCycle;
+
+                return { cycle: globalSprintNumber, week: weekInSprint };
+            }
+
+            remaining -= currentCycleLen;
+        }
+
+        return null;
     }
 
     function getWeekType(weekStart: string): 'sprint' | 'integration' {
@@ -249,6 +284,32 @@ export function MonthView({ onOpenWeek }: MonthViewProps) {
                                         <option value={2}>2 спринта</option>
                                         <option value={3}>3 спринта</option>
                                         <option value={4}>4 спринта</option>
+                                    </select>
+                                </div>
+                                <div className={styles.settingsField}>
+                                    <label>Расширенных инт. недель</label>
+                                    <select
+                                        value={settings.bigIntegrationWeeks}
+                                        onChange={(e) => setMonthSettings(monthKey, {
+                                            bigIntegrationWeeks: Number(e.target.value)
+                                        })}
+                                    >
+                                        <option value={1}>1 неделя</option>
+                                        <option value={2}>2 недели</option>
+                                        <option value={3}>3 недели</option>
+                                    </select>
+                                </div>
+                                <div className={styles.settingsField}>
+                                    <label>Расш. интеграция каждые (циклов)</label>
+                                    <select
+                                        value={settings.bigIntegrationEvery}
+                                        onChange={(e) => setMonthSettings(monthKey, {
+                                            bigIntegrationEvery: Number(e.target.value)
+                                        })}
+                                    >
+                                        <option value={2}>2 цикла</option>
+                                        <option value={3}>3 цикла</option>
+                                        <option value={4}>4 цикла</option>
                                     </select>
                                 </div>
                             </div>
