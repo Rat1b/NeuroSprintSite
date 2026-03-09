@@ -52,33 +52,31 @@ function formatWeekDates(weekStart: string): string {
     return `${start.toLocaleDateString('ru-RU', options)} — ${end.toLocaleDateString('ru-RU', options)}`;
 }
 
-// Генерировать недели строго для месяца, к которому относится currentWeekStart
+// Генерировать недели строго для месяца (по правилу четверга)
 function generateWeeksForView(currentWeekStart: string): string[] {
     const current = new Date(currentWeekStart + 'T12:00:00');
-    const year = current.getFullYear();
-    const month = current.getMonth();
+    // Месяц определяется по четвергу (если кликнули в начало или конец месяца)
+    current.setDate(current.getDate() + 3);
+
+    const viewYear = current.getFullYear();
+    const viewMonth = current.getMonth();
 
     const weeks: string[] = [];
 
-    // Первое число месяца
-    const firstDay = new Date(year, month, 1, 12, 0, 0);
+    // Начинаем поиск с 6 недель назад от выбранной даты
+    const iterDate = new Date(currentWeekStart + 'T12:00:00');
+    iterDate.setDate(iterDate.getDate() - 7 * 6);
 
-    // Понедельник недели, к которой относится 1-е число
-    const dayOfWeek = firstDay.getDay(); // 0(Вс), 1(Пн)... 6(Сб)
-    const diffToMonday = dayOfWeek === 0 ? 6 : dayOfWeek - 1;
+    // Проверяем 12 недель в обе стороны (гарантированно покроет весь месяц)
+    for (let i = 0; i < 12; i++) {
+        const thu = new Date(iterDate);
+        thu.setDate(thu.getDate() + 3); // Четверг этой итерации
 
-    const startWeek = new Date(firstDay);
-    startWeek.setDate(firstDay.getDate() - diffToMonday);
+        if (thu.getFullYear() === viewYear && thu.getMonth() === viewMonth) {
+            weeks.push(toLocalYYYYMMDD(new Date(iterDate)));
+        }
 
-    // Последний день месяца
-    const lastDay = new Date(year, month + 1, 0, 12, 0, 0);
-
-    const currentWeekIter = new Date(startWeek);
-
-    // Генерируем недели, пока дата начала недели (понедельник) не выйдет за пределы месяца
-    while (currentWeekIter <= lastDay) {
-        weeks.push(toLocalYYYYMMDD(currentWeekIter));
-        currentWeekIter.setDate(currentWeekIter.getDate() + 7);
+        iterDate.setDate(iterDate.getDate() + 7);
     }
 
     return weeks;
