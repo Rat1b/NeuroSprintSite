@@ -14,6 +14,13 @@ function getMonthKey(weekStart: string): string {
     return `${year}-${month}`;
 }
 
+const toLocalYYYYMMDD = (d: Date) => {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+};
+
 // Получить название месяца и год
 function getMonthTitle(weekStart: string): string {
     const date = new Date(weekStart + 'T12:00:00');
@@ -70,7 +77,7 @@ function generateWeeksForView(currentWeekStart: string): string[] {
     for (let i = 0; i < 8; i++) {
         const weekDate = new Date(start);
         weekDate.setDate(weekDate.getDate() + (i * 7));
-        weeks.push(weekDate.toISOString().split('T')[0]);
+        weeks.push(toLocalYYYYMMDD(weekDate));
     }
 
     return weeks;

@@ -29,6 +29,13 @@ export function WeekView({ onAddTask, onEditTask }: WeekViewProps) {
 
     const weeklyBudgetHours = currentWeek.budgetHours ?? 10; // Fallback for old data
 
+    const toLocalYYYYMMDD = (d: Date) => {
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${y}-${m}-${day}`;
+    };
+
     // Отслеживание Ctrl/Cmd для дублирования при перетаскивании
     useEffect(() => {
         const handleKeyDown = (e: KeyboardEvent) => {
@@ -70,11 +77,11 @@ export function WeekView({ onAddTask, onEditTask }: WeekViewProps) {
     );
 
     const getDateForDay = (day: DayOfWeek): string => {
-        const weekStart = new Date(currentWeek.weekStart);
+        const weekStart = new Date(currentWeek.weekStart + 'T12:00:00');
         const dayIndex = DAYS_OF_WEEK.indexOf(day);
         const date = new Date(weekStart);
         date.setDate(date.getDate() + dayIndex);
-        return date.toISOString().split('T')[0];
+        return toLocalYYYYMMDD(date);
     };
 
     const handleDragStart = (event: any) => {

@@ -26,6 +26,13 @@ export function Header({ onImportClick, onAIInstructionsClick }: HeaderProps) {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
+    const toLocalYYYYMMDD = (d: Date) => {
+        const y = d.getFullYear();
+        const m = String(d.getMonth() + 1).padStart(2, '0');
+        const day = String(d.getDate()).padStart(2, '0');
+        return `${y}-${m}-${day}`;
+    };
+
     const formatWeekDate = (dateStr: string) => {
         const date = new Date(dateStr + 'T12:00:00');
         const endDate = new Date(date);
@@ -48,13 +55,13 @@ export function Header({ onImportClick, onAIInstructionsClick }: HeaderProps) {
         currentDate.setDate(currentDate.getDate() - 7);
         // Не позволяем перейти раньше 2026 года
         if (currentDate.getFullYear() < 2026) return;
-        goToWeek(currentDate.toISOString().split('T')[0]);
+        goToWeek(toLocalYYYYMMDD(currentDate));
     };
 
     const handleNextWeek = () => {
         const currentDate = new Date(currentWeek.weekStart + 'T12:00:00');
         currentDate.setDate(currentDate.getDate() + 7);
-        goToWeek(currentDate.toISOString().split('T')[0]);
+        goToWeek(toLocalYYYYMMDD(currentDate));
     };
 
     const handlePrevMonth = () => {
@@ -67,7 +74,7 @@ export function Header({ onImportClick, onAIInstructionsClick }: HeaderProps) {
         const dayOfWeek = firstDay.getDay();
         const daysToMonday = dayOfWeek === 0 ? 1 : (dayOfWeek === 1 ? 0 : 8 - dayOfWeek);
         firstDay.setDate(firstDay.getDate() + daysToMonday);
-        goToWeek(firstDay.toISOString().split('T')[0]);
+        goToWeek(toLocalYYYYMMDD(firstDay));
     };
 
     const handleNextMonth = () => {
@@ -78,7 +85,7 @@ export function Header({ onImportClick, onAIInstructionsClick }: HeaderProps) {
         const dayOfWeek = firstDay.getDay();
         const daysToMonday = dayOfWeek === 0 ? 1 : (dayOfWeek === 1 ? 0 : 8 - dayOfWeek);
         firstDay.setDate(firstDay.getDate() + daysToMonday);
-        goToWeek(firstDay.toISOString().split('T')[0]);
+        goToWeek(toLocalYYYYMMDD(firstDay));
     };
 
     const handleExportAllData = () => {
@@ -87,7 +94,7 @@ export function Header({ onImportClick, onAIInstructionsClick }: HeaderProps) {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `neurosprint-backup-${new Date().toISOString().split('T')[0]}.json`;
+        a.download = `neurosprint-backup-${toLocalYYYYMMDD(new Date())}.json`;
         a.click();
         URL.revokeObjectURL(url);
     };
@@ -98,7 +105,7 @@ export function Header({ onImportClick, onAIInstructionsClick }: HeaderProps) {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `neurosprint-ai-export-${new Date().toISOString().split('T')[0]}.json`;
+        a.download = `neurosprint-ai-export-${toLocalYYYYMMDD(new Date())}.json`;
         a.click();
         URL.revokeObjectURL(url);
     };

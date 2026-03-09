@@ -14,6 +14,13 @@ import './index.css';
 function App() {
   const { activeView, goToWeek, setActiveView, exportAllData } = usePlannerStore();
 
+  const toLocalYYYYMMDD = (d: Date) => {
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    return `${y}-${m}-${day}`;
+  };
+
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [isAIModalOpen, setIsAIModalOpen] = useState(false);
@@ -91,7 +98,7 @@ function App() {
         const url = URL.createObjectURL(blob);
         const a = document.createElement('a');
         a.href = url;
-        a.download = `neurosprint-backup-${new Date().toISOString().split('T')[0]}.json`;
+        a.download = `neurosprint-backup-${toLocalYYYYMMDD(new Date())}.json`;
         a.click();
         URL.revokeObjectURL(url);
       }} />
