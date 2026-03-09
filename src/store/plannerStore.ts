@@ -460,9 +460,9 @@ export const usePlannerStore = create<PlannerStore>()(
         }),
         {
             name: 'neurosprint-planner',
-            version: 2,
+            version: 3,
             migrate: (persistedState: unknown, version: number) => {
-                const state = persistedState as Record<string, unknown>;
+                const state = persistedState as Record<string, any>;
 
                 if (version < 2) {
                     // Миграция: обновить monthSettings до нового формата
@@ -482,6 +482,35 @@ export const usePlannerStore = create<PlannerStore>()(
                     }
 
                     state.monthSettings = newSettings;
+                }
+
+                if (version < 3) {
+                    // Миграция к версии 3: Откат бага часовых поясов.
+                    // Если строка даты выпадает на воскресенье, сдвигаем на понедельник.
+                    const shiftToMonday = (dateStr: string): string => {
+                        if (!dateStr) return dateStr;
+                        const d = new Date(dateStr + 'T12:00:00');
+                        if (d.getDay() === 0) {
+                            d.setDate(d.getDate() + 1);
+                        }
+                        const y = d.getFullYear();
+                        const m = String(d.getMonth() + 1).padStart(2, '0');
+                        return `${y}-${m}-${String(d.getDate()).padStart(2, '0')}`;
+                    };
+
+                    if (state.currentWeek && state.currentWeek.weekStart) {
+                        state.currentWeek.weekStart = shiftToMonday(state.currentWeek.weekStart);
+                    }
+
+                    if (Array.isArray(state.weeks)) {
+                        state.weeks.forEach(w => {
+                            if (w.weekStart) w.weekStart = shiftToMonday(w.weekStart);
+                        });
+                    }
+
+                    if (Array.isArray(state.sprintResetWeeks)) {
+                        state.sprintResetWeeks = state.sprintResetWeeks.map(shiftToMonday);
+                    }
                 }
 
                 return state as never;
