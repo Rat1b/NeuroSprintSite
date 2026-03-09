@@ -148,11 +148,6 @@ export function MonthView({ onOpenWeek }: MonthViewProps) {
         const biw = settings.bigIntegrationWeeks;
         const bie = settings.bigIntegrationEvery;
 
-        // Недели до начала спринтов — интеграционные
-        if (weekIndex < 0) {
-            return null;
-        }
-
         // Малый цикл: ie спринтов (каждый sw недель) + iw интеграционных недель
         const smallCycleLen = sw * ie + iw;
         // Большой цикл: ie спринтов (каждый sw недель) + biw интеграционных недель
@@ -160,18 +155,18 @@ export function MonthView({ onOpenWeek }: MonthViewProps) {
         // Суперцикл = (bie - 1) малых + 1 большой
         const superCycleLen = (bie - 1) * smallCycleLen + bigCycleLen;
 
-        const posInSuper = weekIndex % superCycleLen;
+        // Нормализуем индекс (работает и для отрицательных — цикл продолжается назад)
+        let posInSuper = weekIndex % superCycleLen;
+        if (posInSuper < 0) posInSuper += superCycleLen;
 
         // Определяем, в каком подцикле мы находимся
         let remaining = posInSuper;
-        let subCycleIndex = 0; // 0-based index подцикла внутри суперцикла
 
         for (let i = 0; i < bie; i++) {
             const isLastSubCycle = (i === bie - 1);
             const currentCycleLen = isLastSubCycle ? bigCycleLen : smallCycleLen;
 
             if (remaining < currentCycleLen) {
-                subCycleIndex = i;
                 const sprintPartLen = sw * ie;
 
                 // Интеграционная неделя?
@@ -180,12 +175,13 @@ export function MonthView({ onOpenWeek }: MonthViewProps) {
                 }
 
                 // Спринтовая неделя
-                const sprintInSubCycle = Math.floor(remaining / sw) + 1;
-                const weekInSprint = (remaining % sw) + 1;
+                // cycle = номер группы (подцикла) глобально
                 const superCycleNumber = Math.floor(weekIndex / superCycleLen);
-                const globalSprintNumber = superCycleNumber * (ie * bie) + subCycleIndex * ie + sprintInSubCycle;
+                const groupNumber = superCycleNumber * bie + i + 1;
+                // week = позиция внутри группы (1, 2, 3...)
+                const weekInGroup = remaining + 1;
 
-                return { cycle: globalSprintNumber, week: weekInSprint };
+                return { cycle: groupNumber, week: weekInGroup };
             }
 
             remaining -= currentCycleLen;

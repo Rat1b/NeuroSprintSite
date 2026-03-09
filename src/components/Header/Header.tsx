@@ -19,7 +19,8 @@ export function Header({ onImportClick, onAIInstructionsClick }: HeaderProps) {
         setActiveView,
         goToWeek,
         exportAllData,
-        importAllData
+        importAllData,
+        exportForAI
     } = usePlannerStore();
 
     const fileInputRef = useRef<HTMLInputElement>(null);
@@ -87,6 +88,17 @@ export function Header({ onImportClick, onAIInstructionsClick }: HeaderProps) {
         const a = document.createElement('a');
         a.href = url;
         a.download = `neurosprint-backup-${new Date().toISOString().split('T')[0]}.json`;
+        a.click();
+        URL.revokeObjectURL(url);
+    };
+
+    const handleExportForAI = () => {
+        const json = exportForAI();
+        const blob = new Blob([json], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `neurosprint-ai-export-${new Date().toISOString().split('T')[0]}.json`;
         a.click();
         URL.revokeObjectURL(url);
     };
@@ -250,6 +262,14 @@ export function Header({ onImportClick, onAIInstructionsClick }: HeaderProps) {
                             style={{ display: 'none' }}
                         />
                     </label>
+                    <button className="btn btn-secondary" onClick={handleExportForAI} style={{
+                        background: 'linear-gradient(135deg, #8b5cf6, #6d28d9)',
+                        border: 'none',
+                        color: '#fff',
+                        boxShadow: '0 2px 10px rgba(139, 92, 246, 0.3)'
+                    }}>
+                        🤖 Экспорт для ИИ
+                    </button>
                 </div>
             </div>
 
@@ -313,6 +333,17 @@ export function Header({ onImportClick, onAIInstructionsClick }: HeaderProps) {
                             style={{ display: 'none' }}
                         />
                     </label>
+                    <button className="btn btn-secondary" onClick={() => {
+                        setIsMobileMenuOpen(false);
+                        handleExportForAI();
+                    }} style={{
+                        background: 'linear-gradient(135deg, #8b5cf6, #6d28d9)',
+                        border: 'none',
+                        color: '#fff',
+                        boxShadow: '0 2px 10px rgba(139, 92, 246, 0.3)'
+                    }}>
+                        🤖 Экспорт для ИИ
+                    </button>
                 </div>
             </div>
         </header>

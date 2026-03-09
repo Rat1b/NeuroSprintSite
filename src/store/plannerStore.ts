@@ -79,6 +79,9 @@ interface PlannerStore {
     // Полный экспорт/импорт всех данных
     exportAllData: () => string;
     importAllData: (jsonString: string) => boolean;
+
+    // Экспорт для анализа ИИ
+    exportForAI: () => string;
 }
 
 export const usePlannerStore = create<PlannerStore>()(
@@ -384,6 +387,75 @@ export const usePlannerStore = create<PlannerStore>()(
                 } catch {
                     return false;
                 }
+            },
+
+            exportForAI: () => {
+                const state = get();
+                const allWeeks = [...state.weeks, state.currentWeek]
+                    .sort((a, b) => a.weekStart.localeCompare(b.weekStart));
+
+                // Убираем дубликаты по weekStart
+                const uniqueWeeks = allWeeks.filter((w, i, arr) =>
+                    i === 0 || w.weekStart !== arr[i - 1].weekStart
+                );
+
+                const weeksSummary = uniqueWeeks.map(week => {
+                    const totalTasks = week.tasks.length;
+                    const completedTasks = week.tasks.filter(t => t.completed).length;
+                    const totalMinutes = week.tasks.reduce((sum, t) => sum + t.duration, 0);
+                    const completedMinutes = week.tasks.filter(t => t.completed)
+                        .reduce((sum, t) => sum + t.duration, 0);
+
+                    // Группировка задач по проектам
+                    const projectGroups: Record<string, { tasks: string[]; totalMin: number; completedCount: number; totalCount: number }> = {};
+                    for (const task of week.tasks) {
+                        const projName = task.project === 'Ф' ? 'Фундамент'
+                            : task.project === 'Д' ? 'Драйв'
+                                : task.project === 'К' ? 'Кайф'
+                                    : 'Рефлексия';
+                        if (!projectGroups[projName]) {
+                            projectGroups[projName] = { tasks: [], totalMin: 0, completedCount: 0, totalCount: 0 };
+                        }
+                        projectGroups[projName].tasks.push(
+                            `${task.completed ? '✅' : '❌'} ${task.title} (${task.duration}мин, ${task.day})`
+                        );
+                        projectGroups[projName].totalMin += task.duration;
+                        projectGroups[projName].totalCount++;
+                        if (task.completed) projectGroups[projName].completedCount++;
+                    }
+
+                    // Рефлексия
+                    const ref = week.reflection;
+                    const hasReflection = ref && ref.saved;
+
+                    return {
+                        weekStart: week.weekStart,
+                        stats: {
+                            totalTasks,
+                            completedTasks,
+                            completionRate: totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0,
+                            totalHours: +(totalMinutes / 60).toFixed(1),
+                            completedHours: +(completedMinutes / 60).toFixed(1),
+                        },
+                        projects: projectGroups,
+                        reflection: hasReflection ? {
+                            done: ref.done,
+                            notDone: ref.notDone,
+                            adjustments: ref.adjustments,
+                        } : null,
+                    };
+                });
+
+                const exportData = {
+                    exportType: 'neurosprint-ai-analysis',
+                    exportDate: new Date().toISOString(),
+                    description: 'Данные НейроСпринта для анализа ИИ. Каждая неделя содержит задачи по проектам (Фундамент, Драйв, Кайф), статистику выполнения и рефлексию.',
+                    totalWeeks: weeksSummary.length,
+                    weeksWithReflections: weeksSummary.filter(w => w.reflection !== null).length,
+                    weeks: weeksSummary,
+                };
+
+                return JSON.stringify(exportData, null, 2);
             },
         }),
         {
