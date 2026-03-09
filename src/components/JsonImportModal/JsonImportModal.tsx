@@ -113,7 +113,7 @@ export function JsonImportModal({ isOpen, onClose }: JsonImportModalProps) {
                 {parsedData && parsedData.tasks.length > 0 && (
                     <div className={styles.preview}>
                         <h4>Предпросмотр ({parsedData.tasks.length} задач):</h4>
-                        {parsedData.tasks.slice(0, 10).map((task, idx) => (
+                        {parsedData.tasks.map((task, idx) => (
                             <div key={idx} className={styles.previewItem}>
                                 <span className={styles.previewDay}>{task.day}</span>
                                 <span className={`${styles.previewBadge} ${badgeClass(task.project)}`}>
@@ -123,9 +123,6 @@ export function JsonImportModal({ isOpen, onClose }: JsonImportModalProps) {
                                 <span className={styles.previewDuration}>{task.duration} мин</span>
                             </div>
                         ))}
-                        {parsedData.tasks.length > 10 && (
-                            <p className={styles.helpText}>...и ещё {parsedData.tasks.length - 10} задач</p>
-                        )}
                     </div>
                 )}
 

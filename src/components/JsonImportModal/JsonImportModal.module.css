@@ -23,6 +23,8 @@
     background: var(--bg-glass);
     border-radius: var(--radius-sm);
     border: 1px solid var(--border-color);
+    max-height: 250px;
+    overflow-y: auto;
 }
 
 .preview h4 {
