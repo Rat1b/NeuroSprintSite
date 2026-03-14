@@ -35,10 +35,14 @@ export function ReportModal({ isOpen, onClose }: ReportModalProps) {
 
   useEffect(() => {
     if (isOpen) {
+      // Вычисляем правильную дату для выбранного дня недели
+      const dayIndexOffset = DAYS_OF_WEEK.indexOf(selectedDay);
+      const targetDate = new Date(currentWeek.weekStart + 'T12:00:00');
+      targetDate.setDate(targetDate.getDate() + dayIndexOffset);
+
       // Имя месяца на русском для сверки
-      const date = new Date();
       const months = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
-      const dateStr = `${date.getDate()}${months[date.getMonth()]}`;
+      const dateStr = `${targetDate.getDate()}${months[targetDate.getMonth()]}`;
       const header = `#сверка_${dateStr}_${userName || '[Имя]'}\n\n`;
 
       const dayTasks = currentWeek.tasks.filter(t => t.day === selectedDay);
