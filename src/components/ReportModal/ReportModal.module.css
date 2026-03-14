@@ -13,7 +13,7 @@
 }
 
 .modal {
-  background: var(--bg-card);
+  background: var(--bg-secondary);
   border-radius: 16px;
   width: 100%;
   max-width: 500px;
@@ -72,7 +72,90 @@
   overflow-y: auto;
   display: flex;
   flex-direction: column;
+  gap: 20px;
+}
+
+.controlsRow {
+  display: flex;
+  flex-direction: column;
   gap: 16px;
+  background: var(--bg-card);
+  padding: 16px;
+  border-radius: 12px;
+  border: 1px solid var(--border-color);
+}
+
+.controlLabel {
+  font-size: 0.9rem;
+  color: var(--text-secondary);
+  font-weight: 500;
+  display: block;
+  margin-bottom: 8px;
+}
+
+.daySelectorWrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.daySelector {
+  display: flex;
+  gap: 4px;
+  background: var(--bg-main);
+  padding: 4px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+
+.dayBtn {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: var(--text-secondary);
+  padding: 8px 4px;
+  border-radius: 6px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dayBtn:hover {
+  background: rgba(255, 255, 255, 0.05);
+  color: var(--text-primary);
+}
+
+.dayBtnActive {
+  background: var(--accent-gradient);
+  color: white;
+  box-shadow: 0 2px 8px rgba(99, 102, 241, 0.3);
+}
+
+.dayBtnActive:hover {
+  background: var(--accent-gradient);
+}
+
+.nameInputWrapper {
+  display: flex;
+  flex-direction: column;
+}
+
+.nameInput {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  background: var(--bg-main);
+  color: var(--text-primary);
+  font-family: inherit;
+  font-size: 14px;
+  transition: all 0.2s;
+}
+
+.nameInput:focus {
+  outline: none;
+  border-color: var(--accent-primary);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
 }
 
 .description {

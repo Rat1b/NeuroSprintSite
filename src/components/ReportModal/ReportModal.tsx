@@ -1,5 +1,6 @@
 import { useState, useEffect } from 'react';
 import { usePlannerStore } from '../../store/plannerStore';
+import { DayOfWeek, DAYS_OF_WEEK } from '../../types';
 import styles from './ReportModal.module.css';
 
 interface ReportModalProps {
@@ -11,14 +12,40 @@ export function ReportModal({ isOpen, onClose }: ReportModalProps) {
   const { currentWeek } = usePlannerStore();
   const [reportText, setReportText] = useState('');
   const [copied, setCopied] = useState(false);
+  
+  // Day selection setup
+  const getCurrentDay = (): DayOfWeek => {
+    const dayIndex = new Date().getDay();
+    // JS getDay(): 0 is Sunday, 1 is Monday ... 6 is Saturday
+    // DAYS_OF_WEEK: ['ПН', 'ВТ', 'СР', 'ЧТ', 'ПТ', 'СБ', 'ВС']
+    const adjustedIndex = dayIndex === 0 ? 6 : dayIndex - 1;
+    return DAYS_OF_WEEK[adjustedIndex];
+  };
+
+  const [selectedDay, setSelectedDay] = useState<DayOfWeek>(getCurrentDay());
+  const [userName, setUserName] = useState(() => {
+    return localStorage.getItem('neurosprint-tg-report-name') || '';
+  });
+
+  // Save name to localStorage when it changes
+  useEffect(() => {
+    localStorage.setItem('neurosprint-tg-report-name', userName);
+  }, [userName]);
 
   useEffect(() => {
     if (isOpen) {
-      const foundationTasks = currentWeek.tasks.filter(t => t.project === 'Ф');
-      const driveTasks = currentWeek.tasks.filter(t => t.project === 'Д');
-      const joyTasks = currentWeek.tasks.filter(t => t.project === 'К');
+      // Имя месяца на русском для сверки
+      const date = new Date();
+      const months = ['января', 'февраля', 'марта', 'апреля', 'мая', 'июня', 'июля', 'августа', 'сентября', 'октября', 'ноября', 'декабря'];
+      const dateStr = `${date.getDate()}${months[date.getMonth()]}`;
+      const header = `#сверка_${dateStr}_${userName || '[Имя]'}\n\n`;
 
-      let text = 'Ф.\n';
+      const dayTasks = currentWeek.tasks.filter(t => t.day === selectedDay);
+      const foundationTasks = dayTasks.filter(t => t.project === 'Ф');
+      const driveTasks = dayTasks.filter(t => t.project === 'Д');
+      const joyTasks = dayTasks.filter(t => t.project === 'К');
+
+      let text = header + 'Ф.\n';
       if (foundationTasks.length > 0) {
         text += foundationTasks.map(t => `- ${t.completed ? '✅ ' : ''}${t.title}`).join('\n');
       } else {
@@ -42,7 +69,7 @@ export function ReportModal({ isOpen, onClose }: ReportModalProps) {
       setReportText(text);
       setCopied(false);
     }
-  }, [isOpen, currentWeek.tasks]);
+  }, [isOpen, currentWeek.tasks, selectedDay, userName]);
 
   if (!isOpen) return null;
 
@@ -65,10 +92,34 @@ export function ReportModal({ isOpen, onClose }: ReportModalProps) {
         </div>
         
         <div className={styles.content}>
-          <p className={styles.description}>
-            Ниже сгенерирован отчет по вашим задачам на текущую неделю. 
-            Вы можете скопировать его для отправки в чат.
-          </p>
+          <div className={styles.controlsRow}>
+            <div className={styles.daySelectorWrapper}>
+              <span className={styles.controlLabel}>День:</span>
+              <div className={styles.daySelector}>
+                {DAYS_OF_WEEK.map((day) => (
+                  <button
+                    key={day}
+                    className={`${styles.dayBtn} ${selectedDay === day ? styles.dayBtnActive : ''}`}
+                    onClick={() => setSelectedDay(day)}
+                  >
+                    {day}
+                  </button>
+                ))}
+              </div>
+            </div>
+            
+            <div className={styles.nameInputWrapper}>
+              <span className={styles.controlLabel}>Ваше имя (с эмодзи):</span>
+              <input
+                type="text"
+                className={styles.nameInput}
+                placeholder="Например: ТВ 🎸"
+                value={userName}
+                onChange={(e) => setUserName(e.target.value)}
+              />
+            </div>
+          </div>
+
           <textarea
             className={styles.textarea}
             value={reportText}
