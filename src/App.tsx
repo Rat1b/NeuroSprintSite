@@ -8,6 +8,7 @@ import { TaskModal } from './components/TaskModal/TaskModal';
 import { JsonImportModal } from './components/JsonImportModal/JsonImportModal';
 import { AIInstructionsModal } from './components/AIInstructionsModal/AIInstructionsModal';
 import { SaveReminderPopup } from './components/SaveReminderPopup/SaveReminderPopup';
+import { ReportModal } from './components/ReportModal/ReportModal';
 import type { Task, DayOfWeek } from './types';
 import './index.css';
 
@@ -24,6 +25,7 @@ function App() {
   const [isTaskModalOpen, setIsTaskModalOpen] = useState(false);
   const [isImportModalOpen, setIsImportModalOpen] = useState(false);
   const [isAIModalOpen, setIsAIModalOpen] = useState(false);
+  const [isReportModalOpen, setIsReportModalOpen] = useState(false);
   const [editingTask, setEditingTask] = useState<Task | null>(null);
   const [defaultDay, setDefaultDay] = useState<DayOfWeek>('ПН');
 
@@ -71,6 +73,7 @@ function App() {
       <Header
         onImportClick={() => setIsImportModalOpen(true)}
         onAIInstructionsClick={() => setIsAIModalOpen(true)}
+        onReportClick={() => setIsReportModalOpen(true)}
       />
 
       {renderView()}
@@ -90,6 +93,11 @@ function App() {
       <AIInstructionsModal
         isOpen={isAIModalOpen}
         onClose={() => setIsAIModalOpen(false)}
+      />
+
+      <ReportModal
+        isOpen={isReportModalOpen}
+        onClose={() => setIsReportModalOpen(false)}
       />
 
       <SaveReminderPopup onSave={() => {

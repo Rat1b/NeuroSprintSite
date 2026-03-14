@@ -5,6 +5,7 @@ import styles from './Header.module.css';
 interface HeaderProps {
     onImportClick: () => void;
     onAIInstructionsClick: () => void;
+    onReportClick: () => void;
 }
 
 const MONTH_NAMES = [
@@ -12,7 +13,7 @@ const MONTH_NAMES = [
     'Июль', 'Август', 'Сентябрь', 'Октябрь', 'Ноябрь', 'Декабрь'
 ];
 
-export function Header({ onImportClick, onAIInstructionsClick }: HeaderProps) {
+export function Header({ onImportClick, onAIInstructionsClick, onReportClick }: HeaderProps) {
     const {
         currentWeek,
         activeView,
@@ -248,6 +249,9 @@ export function Header({ onImportClick, onAIInstructionsClick }: HeaderProps) {
                     <button className="btn btn-secondary" onClick={onImportClick}>
                         📥 Импорт JSON
                     </button>
+                    <button className="btn btn-secondary" onClick={onReportClick}>
+                        📝 Отчет для ТГ
+                    </button>
                 </div>
 
                 <div className={styles.buttonGroup}>
@@ -313,6 +317,12 @@ export function Header({ onImportClick, onAIInstructionsClick }: HeaderProps) {
                         onImportClick();
                     }}>
                         📥 Импорт JSON
+                    </button>
+                    <button className="btn btn-secondary" onClick={() => {
+                        setIsMobileMenuOpen(false);
+                        onReportClick();
+                    }}>
+                        📝 Отчет для ТГ
                     </button>
                 </div>
 
