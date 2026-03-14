@@ -110,11 +110,11 @@ export function ReportModal({ isOpen, onClose }: ReportModalProps) {
             </div>
             
             <div className={styles.nameInputWrapper}>
-              <span className={styles.controlLabel}>Ваше имя (с эмодзи):</span>
+              <span className={styles.controlLabel}>Ваше имя:</span>
               <input
                 type="text"
                 className={styles.nameInput}
-                placeholder="Например: ТВ 🎸"
+                placeholder="Имя"
                 value={userName}
                 onChange={(e) => setUserName(e.target.value)}
               />
