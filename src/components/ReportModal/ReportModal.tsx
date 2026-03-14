@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { usePlannerStore } from '../../store/plannerStore';
-import { DayOfWeek, DAYS_OF_WEEK } from '../../types';
+import { DAYS_OF_WEEK } from '../../types';
+import type { DayOfWeek } from '../../types';
 import styles from './ReportModal.module.css';
 
 interface ReportModalProps {
